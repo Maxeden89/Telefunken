@@ -6,8 +6,8 @@ import httpx
 import base64
 
 # ✅ URL del servidor — cambiá por la URL de Railway cuando desplegues
-SERVER_URL = "http://localhost:8000"
-WS_URL = "ws://localhost:8000"
+SERVER_URL = "https://telefunken-1.onrender.com"
+WS_URL = "wss://telefunken-1.onrender.com"
 
 # Cargamos la imagen grafiti como base64
 with open(r"C:\Users\Lenovo\Desktop\TELEFUNKEN\Card_game\assets\telefunken_graffiti.png.png", "rb") as f:
