@@ -5,6 +5,23 @@ import websockets
 import httpx
 import base64
 
+def svg_to_b64(svg: str) -> str:
+    return base64.b64encode(svg.encode()).decode()
+
+SUITS_SVG = {
+    "Spades": svg_to_b64('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 5 C50 5 5 45 5 65 C5 80 20 85 35 78 C30 88 25 95 15 98 L85 98 C75 95 70 88 65 78 C80 85 95 80 95 65 C95 45 50 5 50 5Z" fill="black"/></svg>'),
+    "Clubs": svg_to_b64('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="35" r="22" fill="black"/><circle cx="25" cy="60" r="22" fill="black"/><circle cx="75" cy="60" r="22" fill="black"/><rect x="40" y="55" width="20" height="35" fill="black"/><rect x="30" y="85" width="40" height="10" fill="black"/></svg>'),
+    "Hearts": svg_to_b64('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 85 Q5 55 5 30 Q5 5 30 5 Q42 5 50 18 Q58 5 70 5 Q95 5 95 30 Q95 55 50 85 Z" fill="#e53935"/></svg>'),
+    "Diamonds": svg_to_b64('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="50,5 95,50 50,95 5,50" fill="#e53935"/></svg>'),
+}
+
+SUITS_COLOR = {
+    "Hearts": ft.Colors.RED_700,
+    "Diamonds": ft.Colors.RED_700,
+    "Spades": ft.Colors.BLACK,
+    "Clubs": ft.Colors.BLACK,
+}
+
 # ✅ URL del servidor — cambiá por la URL de Railway cuando desplegues
 SERVER_URL = "https://telefunken-1.onrender.com"
 WS_URL = "wss://telefunken-1.onrender.com"
@@ -16,19 +33,11 @@ with open(r"C:\Users\Lenovo\Desktop\TELEFUNKEN\Card_game\assets\telefunken_graff
 # --- CONFIGURACIÓN DE ESTILO DE CARTAS ---
 def get_card_style(card: dict):
     if card.get("is_joker"):
-        return "🃏", ft.Colors.PURPLE_500
-
+        return None, ft.Colors.PURPLE_500
     suit_name = card.get("suit", "")
-    suits_data = {"Hearts": "♥", "Diamonds": "♦", "Spades": "♠", "Clubs": "♣"}
-    colors = {
-        "Hearts": ft.Colors.RED_600,
-        "Diamonds": ft.Colors.RED_600,
-        "Spades": ft.Colors.BLACK,
-        "Clubs": ft.Colors.BLACK,
-    }
-    icon = suits_data.get(suit_name, "?")
-    color = colors.get(suit_name, ft.Colors.BLACK)
-    return icon, color
+    svg = SUITS_SVG.get(suit_name)
+    color = SUITS_COLOR.get(suit_name, ft.Colors.BLACK)
+    return svg, color
 
 
 async def main(page: ft.Page):
@@ -55,7 +64,7 @@ async def main(page: ft.Page):
 
     # --- CONTENEDORES UI ---
     mesa_container = ft.Column(spacing=10, scroll=ft.ScrollMode.AUTO, expand=True)
-    mano_container = ft.Row(wrap=True, spacing=10, alignment=ft.MainAxisAlignment.CENTER)
+    mano_container = ft.Row(wrap=True, spacing=10, alignment=ft.MainAxisAlignment.CENTER, tight=True)
     info_text = ft.Column(horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=5)
     descarte_btn = ft.Container(width=75, height=110, bgcolor=ft.Colors.WHITE24, border_radius=10)
 
@@ -312,11 +321,12 @@ async def main(page: ft.Page):
 
         # Timer — el servidor manda el estado y el cliente maneja el timer localmente
         gs = state.get("game_state")
-        if gs and not state["timer_active"]:
+        if gs:
             fase = gs.get("turn_phase", "DRAW")
             es_mi_turno = gs.get("current_player_index") == state["my_index"]
             if es_mi_turno:
-                iniciar_timer(fase)
+                if not state["timer_active"]:
+                    iniciar_timer(fase)
             else:
                 detener_timer()
 
@@ -657,7 +667,7 @@ async def main(page: ft.Page):
             carta_visual = ft.Container(
                 content=ft.Stack([
                     ft.Container(ft.Text(display_rank, size=16, weight="bold", color=color), padding=5),
-                    ft.Container(ft.Text(icon, size=40, color=color), alignment=ft.Alignment(0, 0)),
+                    ft.Container(content=ft.Image(src=f"data:image/svg+xml;base64,{icon}", width=45, height=45, fit="contain",) if icon else ft.Text("🃏", size=32), alignment=ft.Alignment(0, 0),),
                     badge,
                     check_preparada,
                 ]),
@@ -771,8 +781,14 @@ async def main(page: ft.Page):
                     ft.Container(
                         content=ft.Stack([
                             ft.Container(ft.Text(display_rank, size=9, weight="bold", color=color), padding=2),
-                            ft.Container(ft.Text(icon if not card.get("is_joker") else "🃏", size=16, color=color),
-                                         alignment=ft.Alignment(0, 0)),
+                            ft.Container(
+                                content=ft.Image(
+                                    src=f"data:image/svg+xml;base64,{icon}",
+                                    width=28, height=28,
+                                    fit="contain",
+                                ) if icon else ft.Text("🃏", size=16),
+                                alignment=ft.Alignment(0, 0)
+                            ),
                         ]),
                         width=45, height=65, bgcolor=ft.Colors.WHITE, border_radius=5,
                         border=ft.Border.all(2, ft.Colors.PURPLE_400) if card.get("is_joker") else None
@@ -809,20 +825,31 @@ async def main(page: ft.Page):
                 juegos_row,
             ])
         )
+        
 
         # Pozo
         discard_top = gs.get("discard_top")
         if discard_top:
             icon, color = get_card_style(discard_top)
             rank = discard_top.get("rank", "?")
-            descarte_btn.content = ft.Stack([
-                ft.Container(ft.Text(rank, color=color, weight="bold"), padding=5),
-                ft.Container(ft.Text(icon, color=color, size=35), alignment=ft.Alignment(0, 0))
-            ])
+            descarte_btn.padding = 5
             descarte_btn.bgcolor = ft.Colors.WHITE
+            descarte_btn.content = ft.Column([
+                ft.Text(rank, color=color, weight="bold", size=16),
+                ft.Image(
+                    src=f"data:image/svg+xml;base64,{icon}",
+                    width=45, height=45,
+                    fit="contain",
+                ) if icon else ft.Text("🃏", size=35, color=ft.Colors.PURPLE_500),
+            ], 
+            alignment=ft.MainAxisAlignment.CENTER,
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            spacing=0,
+            tight=True,
+            )
         else:
             descarte_btn.content = None
-            descarte_btn.bgcolor = ft.Colors.WHITE10
+            descarte_btn.bgcolor = ft.Colors.WHITE24
 
         info_text.update()
         page.update()
