@@ -16,10 +16,10 @@ SUITS_SVG = {
 }
 
 SUITS_COLOR = {
-    "Hearts": ft.Colors.RED_700,
-    "Diamonds": ft.Colors.RED_700,
-    "Spades": ft.Colors.BLACK,
-    "Clubs": ft.Colors.BLACK,
+    "Hearts": ft.colors.RED_700,
+    "Diamonds": ft.colors.RED_700,
+    "Spades": ft.colors.BLACK,
+    "Clubs": ft.colors.BLACK,
 }
 
 # ✅ URL del servidor — cambiá por la URL de Railway cuando desplegues
@@ -30,16 +30,16 @@ WS_URL = "wss://telefunken-1.onrender.com"
 # --- CONFIGURACIÓN DE ESTILO DE CARTAS ---
 def get_card_style(card: dict):
     if card.get("is_joker"):
-        return None, ft.Colors.PURPLE_500
+        return None, ft.colors.PURPLE_500
     suit_name = card.get("suit", "")
     svg = SUITS_SVG.get(suit_name)
-    color = SUITS_COLOR.get(suit_name, ft.Colors.BLACK)
+    color = SUITS_COLOR.get(suit_name, ft.colors.BLACK)
     return svg, color
 
 
 async def main(page: ft.Page):
     page.title = "Telefunken Pro"
-    page.bgcolor = ft.Colors.GREEN_900
+    page.bgcolor = ft.colors.GREEN_900
     page.padding = 20
     page.window_width = 1100
     page.window_height = 850
@@ -63,13 +63,13 @@ async def main(page: ft.Page):
     mesa_container = ft.Column(spacing=10, scroll=ft.ScrollMode.AUTO, expand=True)
     mano_container = ft.Row(wrap=True, spacing=10, alignment=ft.MainAxisAlignment.CENTER, tight=True)
     info_text = ft.Column(horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=5)
-    descarte_btn = ft.Container(width=75, height=110, bgcolor=ft.Colors.WHITE24, border_radius=10)
+    descarte_btn = ft.Container(width=75, height=110, bgcolor=ft.colors.WHITE24, border_radius=10)
 
     # --- TIMER WIDGET ---
-    timer_text = ft.Text("30", size=20, weight="bold", color=ft.Colors.WHITE)
+    timer_text = ft.Text("30", size=20, weight="bold", color=ft.colors.WHITE)
     timer_widget = ft.Container(
         content=timer_text,
-        bgcolor=ft.Colors.GREEN_700,
+        bgcolor=ft.colors.GREEN_700,
         border_radius=25,
         width=50, height=50,
         alignment=ft.Alignment(0, 0),
@@ -82,8 +82,8 @@ async def main(page: ft.Page):
     def mostrar_pantalla_inicio():
         page.controls.clear()
 
-        titulo = ft.Text("TELEFUNKEN", size=48, weight="bold", color=ft.Colors.AMBER_400)
-        subtitulo = ft.Text("el juego de cartas", size=14, color=ft.Colors.WHITE54)
+        titulo = ft.Text("TELEFUNKEN", size=48, weight="bold", color=ft.colors.AMBER_400)
+        subtitulo = ft.Text("el juego de cartas", size=14, color=ft.colors.WHITE54)
 
         # --- CREAR SALA ---
         campos_nombres = [ft.TextField(label=f"Jugador {i+1}", width=200) for i in range(2)]
@@ -113,7 +113,7 @@ async def main(page: ft.Page):
             else:
                 mostrar_mensaje(data.get("message", "Error"))
 
-        btn_crear = ft.FilledButton("Crear Sala", on_click=crear_sala, bgcolor=ft.Colors.GREEN_700)
+        btn_crear = ft.FilledButton("Crear Sala", on_click=crear_sala, bgcolor=ft.colors.GREEN_700)
 
         # --- UNIRSE A SALA ---
         campo_codigo = ft.TextField(label="Código de sala", width=200)
@@ -147,7 +147,7 @@ async def main(page: ft.Page):
             state["my_index"] = my_index
             mostrar_sala_espera(codigo, [{"index": i, "name": n} for i, n in enumerate(jugadores)])
 
-        btn_unirse = ft.FilledButton("Unirse", on_click=unirse_sala, bgcolor=ft.Colors.BLUE_700)
+        btn_unirse = ft.FilledButton("Unirse", on_click=unirse_sala, bgcolor=ft.colors.BLUE_700)
 
         page.add(
             ft.Column([
@@ -158,14 +158,14 @@ async def main(page: ft.Page):
                     # Panel Crear
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("Crear Sala", size=18, weight="bold", color=ft.Colors.WHITE),
-                            ft.Text("Jugadores:", size=12, color=ft.Colors.WHITE54),
+                            ft.Text("Crear Sala", size=18, weight="bold", color=ft.colors.WHITE),
+                            ft.Text("Jugadores:", size=12, color=ft.colors.WHITE54),
                             slider_jugadores,
                             col_nombres,
                             ft.Container(height=10),
                             btn_crear,
                         ], spacing=8),
-                        bgcolor=ft.Colors.WHITE10,
+                        bgcolor=ft.colors.WHITE10,
                         border_radius=12,
                         padding=20,
                         width=280,
@@ -174,13 +174,13 @@ async def main(page: ft.Page):
                     # Panel Unirse
                     ft.Container(
                         content=ft.Column([
-                            ft.Text("Unirse a Sala", size=18, weight="bold", color=ft.Colors.WHITE),
+                            ft.Text("Unirse a Sala", size=18, weight="bold", color=ft.colors.WHITE),
                             campo_codigo,
                             campo_nombre,
                             ft.Container(height=10),
                             btn_unirse,
                         ], spacing=8),
-                        bgcolor=ft.Colors.WHITE10,
+                        bgcolor=ft.colors.WHITE10,
                         border_radius=12,
                         padding=20,
                         width=280,
@@ -195,18 +195,18 @@ async def main(page: ft.Page):
         page.controls.clear()
         page.add(
             ft.Column([
-                ft.Text("Esperando jugadores...", size=24, weight="bold", color=ft.Colors.WHITE),
-                ft.Text(f"Código de sala:", size=16, color=ft.Colors.WHITE54),
+                ft.Text("Esperando jugadores...", size=24, weight="bold", color=ft.colors.WHITE),
+                ft.Text(f"Código de sala:", size=16, color=ft.colors.WHITE54),
                 ft.Container(
-                    content=ft.Text(codigo, size=48, weight="bold", color=ft.Colors.AMBER_400),
-                    bgcolor=ft.Colors.WHITE10,
+                    content=ft.Text(codigo, size=48, weight="bold", color=ft.colors.AMBER_400),
+                    bgcolor=ft.colors.WHITE10,
                     border_radius=12,
                     padding=ft.Padding(30, 10, 30, 10),
                 ),
-                ft.Text("Compartí este código con tus amigos", size=14, color=ft.Colors.WHITE54),
+                ft.Text("Compartí este código con tus amigos", size=14, color=ft.colors.WHITE54),
                 ft.Container(height=20),
                 ft.Column([
-                    ft.Text(f"👤 {j['name']}", color=ft.Colors.WHITE, size=16)
+                    ft.Text(f"👤 {j['name']}", color=ft.colors.WHITE, size=16)
                     for j in jugadores
                 ]),
             ], horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -363,12 +363,12 @@ async def main(page: ft.Page):
 
     def get_timer_color(segundos, fase):
         if fase == "DRAW":
-            return ft.Colors.BLUE_700 if segundos > 5 else ft.Colors.RED_700
+            return ft.colors.BLUE_700 if segundos > 5 else ft.colors.RED_700
         if segundos <= 5:
-            return ft.Colors.RED_700
+            return ft.colors.RED_700
         elif segundos <= 15:
-            return ft.Colors.AMBER_700
-        return ft.Colors.GREEN_700
+            return ft.colors.AMBER_700
+        return ft.colors.GREEN_700
 
     def actualizar_timer_ui(segundos, fase):
         timer_text.value = str(segundos)
@@ -469,8 +469,8 @@ async def main(page: ft.Page):
 
             suits_icons = {"hearts": "♥", "diamonds": "♦", "spades": "♠", "clubs": "♣"}
             suits_colors = {
-                "hearts": ft.Colors.RED_600, "diamonds": ft.Colors.RED_600,
-                "spades": ft.Colors.BLACK, "clubs": ft.Colors.BLACK
+                "hearts": ft.colors.RED_600, "diamonds": ft.colors.RED_600,
+                "spades": ft.colors.BLACK, "clubs": ft.colors.BLACK
             }
 
             for opt in opciones:
@@ -483,7 +483,7 @@ async def main(page: ft.Page):
 
                 val_suit = next((s for s in ["hearts", "diamonds", "spades"] if s in s_raw), "clubs")
                 icon = suits_icons.get(val_suit, "♣")
-                color = suits_colors.get(val_suit, ft.Colors.BLACK)
+                color = suits_colors.get(val_suit, ft.colors.BLACK)
 
                 opciones_row.controls.append(
                     ft.GestureDetector(
@@ -493,8 +493,8 @@ async def main(page: ft.Page):
                                 ft.Container(content=ft.Text(val_rank, size=22, weight="bold", color=color), padding=ft.Padding(10, 5, 0, 0)),
                                 ft.Container(content=ft.Text(icon, size=45, color=color), alignment=ft.Alignment(0, 0)),
                             ]),
-                            width=85, height=130, bgcolor=ft.Colors.WHITE, border_radius=10,
-                            border=ft.Border.all(1, ft.Colors.BLACK26)
+                            width=85, height=130, bgcolor=ft.colors.WHITE, border_radius=10,
+                            border=ft.Border.all(1, ft.colors.BLACK26)
                         )
                     )
                 )
@@ -502,7 +502,7 @@ async def main(page: ft.Page):
         else:
             controles.append(ft.Text(mensaje, size=16))
             acciones = [
-                ft.FilledButton("SÍ", on_click=lambda _: [cerrar_dialogo(), on_si() if on_si else None], bgcolor=ft.Colors.GREEN_700),
+                ft.FilledButton("SÍ", on_click=lambda _: [cerrar_dialogo(), on_si() if on_si else None], bgcolor=ft.colors.GREEN_700),
                 ft.TextButton("NO", on_click=lambda _: [cerrar_dialogo(), on_no() if on_no else None])
             ]
 
@@ -620,14 +620,14 @@ async def main(page: ft.Page):
                 content=ft.Text(str(order_index), size=10, color="white", weight="bold"),
                 alignment=ft.Alignment(0, 0),
                 width=20, height=20,
-                bgcolor=ft.Colors.BLUE_700,
+                bgcolor=ft.colors.BLUE_700,
                 border_radius=10,
                 right=5, top=5,
                 visible=is_selected
             )
 
             check_preparada = ft.Container(
-                content=ft.Icon(ft.Icons.CHECK_CIRCLE, color=ft.Colors.GREEN_400, size=20),
+                content=ft.Icon(ft.Icons.CHECK_CIRCLE, color=ft.colors.GREEN_400, size=20),
                 right=5, bottom=5,
                 visible=esta_preparada
             )
@@ -669,10 +669,10 @@ async def main(page: ft.Page):
                     check_preparada,
                 ]),
                 width=75, height=110,
-                bgcolor=ft.Colors.GREEN_100 if esta_preparada else (ft.Colors.AMBER_50 if is_selected else ft.Colors.WHITE),
+                bgcolor=ft.colors.GREEN_100 if esta_preparada else (ft.colors.AMBER_50 if is_selected else ft.colors.WHITE),
                 border_radius=10,
                 opacity=0.5 if esta_preparada else 1.0,
-                border=ft.Border.all(3, ft.Colors.GREEN_700 if esta_preparada else (ft.Colors.BLUE_400 if is_selected else ft.Colors.BLACK26)),
+                border=ft.Border.all(3, ft.colors.GREEN_700 if esta_preparada else (ft.colors.BLUE_400 if is_selected else ft.colors.BLACK26)),
             )
 
             draggable = ft.Draggable(
@@ -709,20 +709,20 @@ async def main(page: ft.Page):
         # Indicador turno
         es_mi_turno = current_idx == state["my_index"]
         turno_txt = "🟢 TU TURNO" if es_mi_turno else f"⏳ Turno de {current_player.get('name', '')}"
-        turno_color = ft.Colors.GREEN_300 if es_mi_turno else ft.Colors.WHITE54
+        turno_color = ft.colors.GREEN_300 if es_mi_turno else ft.colors.WHITE54
 
         # Indicador objetivo
         if my_player.get("has_met_objective"):
             objetivo_widget = ft.Container(
-                content=ft.Text("✅ OBJETIVO CUMPLIDO", size=14, weight="bold", color=ft.Colors.GREEN_900),
-                bgcolor=ft.Colors.GREEN_300, border_radius=8,
+                content=ft.Text("✅ OBJETIVO CUMPLIDO", size=14, weight="bold", color=ft.colors.GREEN_900),
+                bgcolor=ft.colors.GREEN_300, border_radius=8,
                 padding=ft.Padding(12, 4, 12, 4),
             )
         else:
             grupos_txt = f"📦 Grupos: {len(state['pending_melds'])}" if state["pending_melds"] else "🎯 Pendiente"
             objetivo_widget = ft.Container(
-                content=ft.Text(grupos_txt, size=14, color=ft.Colors.ORANGE_200),
-                bgcolor=ft.Colors.ORANGE_900, border_radius=8,
+                content=ft.Text(grupos_txt, size=14, color=ft.colors.ORANGE_200),
+                bgcolor=ft.colors.ORANGE_900, border_radius=8,
                 padding=ft.Padding(12, 4, 12, 4),
             )
 
@@ -736,16 +736,16 @@ async def main(page: ft.Page):
                     content=ft.Column([
                         ft.Text(
                             f"{'👤 ' if es_yo else ''}{p['name']}",
-                            color=ft.Colors.YELLOW_400 if es_current else ft.Colors.WHITE70,
+                            color=ft.colors.YELLOW_400 if es_current else ft.colors.WHITE70,
                             size=13, weight="bold" if es_current else "normal"
                         ),
-                        ft.Text(f"🃏 {p['hand_count']} cartas", size=11, color=ft.Colors.WHITE54),
-                        ft.Text(f"🛒 {p['purchases_used']}/7", size=11, color=ft.Colors.WHITE54),
+                        ft.Text(f"🃏 {p['hand_count']} cartas", size=11, color=ft.colors.WHITE54),
+                        ft.Text(f"🛒 {p['purchases_used']}/7", size=11, color=ft.colors.WHITE54),
                     ], spacing=2, tight=True),
-                    bgcolor=ft.Colors.WHITE24 if es_current else ft.Colors.WHITE10,
+                    bgcolor=ft.colors.WHITE24 if es_current else ft.colors.WHITE10,
                     border_radius=8,
                     padding=ft.Padding(8, 6, 8, 6),
-                    border=ft.Border.all(1, ft.Colors.YELLOW_400) if es_current else None,
+                    border=ft.Border.all(1, ft.colors.YELLOW_400) if es_current else None,
                 )
             )
 
@@ -787,8 +787,8 @@ async def main(page: ft.Page):
                                 alignment=ft.Alignment(0, 0)
                             ),
                         ]),
-                        width=45, height=65, bgcolor=ft.Colors.WHITE, border_radius=5,
-                        border=ft.Border.all(2, ft.Colors.PURPLE_400) if card.get("is_joker") else None
+                        width=45, height=65, bgcolor=ft.colors.WHITE, border_radius=5,
+                        border=ft.Border.all(2, ft.colors.PURPLE_400) if card.get("is_joker") else None
                     )
                 )
 
@@ -796,14 +796,14 @@ async def main(page: ft.Page):
                 ft.Container(
                     content=ft.Column([
                         ft.Row([
-                            ft.Text(f"Juego {i+1}", color=ft.Colors.YELLOW_400, weight="bold", size=12),
-                            ft.IconButton(ft.Icons.ADD_CIRCLE_OUTLINE, icon_color=ft.Colors.YELLOW_400,
+                            ft.Text(f"Juego {i+1}", color=ft.colors.YELLOW_400, weight="bold", size=12),
+                            ft.IconButton(ft.Icons.ADD_CIRCLE_OUTLINE, icon_color=ft.colors.YELLOW_400,
                                           icon_size=22, data=i, on_click=agregar_a_juego_click)
                         ], tight=True),
                         meld_row,
                     ], spacing=5, tight=True),
-                    bgcolor=ft.Colors.WHITE10, border_radius=8, padding=8,
-                    border=ft.Border.all(1, ft.Colors.WHITE24)
+                    bgcolor=ft.colors.WHITE10, border_radius=8, padding=8,
+                    border=ft.Border.all(1, ft.colors.WHITE24)
                 )
             )
 
@@ -814,7 +814,7 @@ async def main(page: ft.Page):
                         "TELEFUNKEN",
                         size=120,
                         weight="bold",
-                        color=ft.Colors.with_opacity(0.06, ft.Colors.WHITE),
+                        color=ft.colors.with_opacity(0.06, ft.colors.WHITE),
                     ),
                     alignment=ft.Alignment(0, 0),
                     expand=True,
@@ -831,14 +831,14 @@ async def main(page: ft.Page):
             icon, color = get_card_style(discard_top)
             rank = discard_top.get("rank", "?")
             descarte_btn.padding = 5
-            descarte_btn.bgcolor = ft.Colors.WHITE
+            descarte_btn.bgcolor = ft.colors.WHITE
             descarte_btn.content = ft.Column([
                 ft.Text(rank, color=color, weight="bold", size=16),
                 ft.Image(
                     src=f"data:image/svg+xml;base64,{icon}",
                     width=45, height=45,
                     fit="contain",
-                ) if icon else ft.Text("🃏", size=35, color=ft.Colors.PURPLE_500),
+                ) if icon else ft.Text("🃏", size=35, color=ft.colors.PURPLE_500),
             ], 
             alignment=ft.MainAxisAlignment.CENTER,
             horizontal_alignment=ft.CrossAxisAlignment.CENTER,
@@ -847,7 +847,7 @@ async def main(page: ft.Page):
             )
         else:
             descarte_btn.content = None
-            descarte_btn.bgcolor = ft.Colors.WHITE24
+            descarte_btn.bgcolor = ft.colors.WHITE24
 
         info_text.update()
         page.update()
@@ -858,9 +858,9 @@ async def main(page: ft.Page):
     btn_mazo = ft.FilledButton("Mazo", on_click=realizar_robo, data="deck")
     btn_descarte_btn = ft.FilledButton("Descarte", on_click=realizar_robo, data="discard")
     btn_preparar = ft.FilledButton("Preparar Juego", icon=ft.Icons.ADD, on_click=preparar_juego)
-    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.Icons.RESTART_ALT, on_click=cancelar_todo, color=ft.Colors.RED_300)
-    btn_bajar = ft.FilledButton("Bajar Juego", on_click=realizar_bajar_juego, bgcolor=ft.Colors.GREEN_700)
-    btn_tirar = ft.FilledButton("Descartar", on_click=realizar_descarte, bgcolor=ft.Colors.RED_700)
+    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.Icons.RESTART_ALT, on_click=cancelar_todo, color=ft.colors.RED_300)
+    btn_bajar = ft.FilledButton("Bajar Juego", on_click=realizar_bajar_juego, bgcolor=ft.colors.GREEN_700)
+    btn_tirar = ft.FilledButton("Descartar", on_click=realizar_descarte, bgcolor=ft.colors.RED_700)
 
     # =========================================
     # ARRANQUE — Pantalla de inicio
