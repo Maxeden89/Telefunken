@@ -3,7 +3,8 @@ import asyncio
 import json
 import websockets
 import httpx
-import base64
+import base64   
+import os
 
 def svg_to_b64(svg: str) -> str:
     return base64.b64encode(svg.encode()).decode()
@@ -868,5 +869,12 @@ async def main(page: ft.Page):
     mostrar_pantalla_inicio()
 
 
+# --- AL FINAL DE TU ARCHIVO ---
 if __name__ == "__main__":
-    ft.app(main)
+    import os
+    ft.app(
+        target=main,
+        view=ft.AppView.WEB_BROWSER, # Obligatorio para la web
+        host="0.0.0.0",              # Obligatorio para Render
+        port=int(os.getenv("PORT", 8000)) # Escucha el puerto que Render te asigne
+    )
