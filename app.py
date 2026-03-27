@@ -628,7 +628,7 @@ async def main(page: ft.Page):
             )
 
             check_preparada = ft.Container(
-                content=ft.Icon(ft.Icons.CHECK_CIRCLE, color=ft.colors.GREEN_400, size=20),
+                content=ft.Icon(ft.icons.CHECK_CIRCLE, color=ft.colors.GREEN_400, size=20),
                 right=5, bottom=5,
                 visible=esta_preparada
             )
@@ -798,7 +798,7 @@ async def main(page: ft.Page):
                     content=ft.Column([
                         ft.Row([
                             ft.Text(f"Juego {i+1}", color=ft.colors.YELLOW_400, weight="bold", size=12),
-                            ft.IconButton(ft.Icons.ADD_CIRCLE_OUTLINE, icon_color=ft.colors.YELLOW_400,
+                            ft.IconButton(ft.icons.ADD_CIRCLE_OUTLINE, icon_color=ft.colors.YELLOW_400,
                                           icon_size=22, data=i, on_click=agregar_a_juego_click)
                         ], tight=True),
                         meld_row,
@@ -858,8 +858,8 @@ async def main(page: ft.Page):
     # =========================================
     btn_mazo = ft.FilledButton("Mazo", on_click=realizar_robo, data="deck")
     btn_descarte_btn = ft.FilledButton("Descarte", on_click=realizar_robo, data="discard")
-    btn_preparar = ft.FilledButton("Preparar Juego", icon=ft.Icons.ADD, on_click=preparar_juego)
-    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.Icons.RESTART_ALT, on_click=cancelar_todo, color=ft.colors.RED_300)
+    btn_preparar = ft.FilledButton("Preparar Juego", icon=ft.icons.ADD, on_click=preparar_juego)
+    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.icons.RESTART_ALT, on_click=cancelar_todo, color=ft.colors.RED_300)
     btn_bajar = ft.FilledButton("Bajar Juego", on_click=realizar_bajar_juego, bgcolor=ft.colors.GREEN_700)
     btn_tirar = ft.FilledButton("Descartar", on_click=realizar_descarte, bgcolor=ft.colors.RED_700)
 
