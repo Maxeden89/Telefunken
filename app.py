@@ -859,7 +859,7 @@ async def main(page: ft.Page):
     btn_mazo = ft.FilledButton("Mazo", on_click=realizar_robo, data="deck")
     btn_descarte_btn = ft.FilledButton("Descarte", on_click=realizar_robo, data="discard")
     btn_preparar = ft.FilledButton("Preparar Juego", icon=ft.icons.ADD, on_click=preparar_juego)
-    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.icons.RESTART_ALT, on_click=cancelar_todo, color=ft.colors.RED_300)
+    btn_cancelar = ft.FilledButton("Cancelar", icon=ft.icons.RESTART_ALT, on_click=cancelar_todo, bgcolor=ft.colors.RED_300)
     btn_bajar = ft.FilledButton("Bajar Juego", on_click=realizar_bajar_juego, bgcolor=ft.colors.GREEN_700)
     btn_tirar = ft.FilledButton("Descartar", on_click=realizar_descarte, bgcolor=ft.colors.RED_700)
 
