@@ -114,7 +114,7 @@ async def main(page: ft.Page):
             else:
                 mostrar_mensaje(data.get("message", "Error"))
 
-        btn_crear = ft.FilledButton("Crear Sala", on_click=crear_sala, bgcolor=ft.colors.GREEN_700)
+        btn_crear = ft.FilledButton("Crear Sala", on_click=crear_sala)
 
         # --- UNIRSE A SALA ---
         campo_codigo = ft.TextField(label="Código de sala", width=200)
@@ -148,7 +148,7 @@ async def main(page: ft.Page):
             state["my_index"] = my_index
             mostrar_sala_espera(codigo, [{"index": i, "name": n} for i, n in enumerate(jugadores)])
 
-        btn_unirse = ft.FilledButton("Unirse", on_click=unirse_sala, bgcolor=ft.colors.BLUE_700)
+        btn_unirse = ft.FilledButton("Unirse", on_click=unirse_sala)
 
         page.add(
             ft.Column([
@@ -503,7 +503,7 @@ async def main(page: ft.Page):
         else:
             controles.append(ft.Text(mensaje, size=16))
             acciones = [
-                ft.FilledButton("SÍ", on_click=lambda _: [cerrar_dialogo(), on_si() if on_si else None], bgcolor=ft.colors.GREEN_700),
+                ft.FilledButton("SÍ", on_click=lambda _: [cerrar_dialogo(), on_si() if on_si else None]),
                 ft.TextButton("NO", on_click=lambda _: [cerrar_dialogo(), on_no() if on_no else None])
             ]
 
