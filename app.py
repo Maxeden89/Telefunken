@@ -216,7 +216,7 @@ async def main(page: ft.Page):
         page.update()
 
         # Conectamos el WebSocket
-        page.run_task(conectar_websocket)
+        asyncio.create_task(conectar_websocket())
 
     # =========================================
     # WEBSOCKET — Conexión y recepción
