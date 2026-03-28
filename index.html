@@ -1130,6 +1130,43 @@ async function siguienteRonda() {
   } catch(e) { mostrarToast('Error al avanzar ronda'); }
 }
 
+function mostrarModalSiNo(titulo, msg, onSi, onNo) {
+  document.getElementById('modal-sino-titulo').textContent = titulo;
+  document.getElementById('modal-sino-msg').textContent = msg;
+  const overlay = document.getElementById('modal-sino');
+  overlay.classList.add('activo');
+  document.getElementById('modal-si-btn').onclick = () => { overlay.classList.remove('activo'); onSi(); };
+  document.getElementById('modal-no-btn').onclick = () => { overlay.classList.remove('activo'); onNo(); };
+}
+
+function mostrarModalJoker(data) {
+  document.getElementById('modal-joker-msg').textContent = data.message || '¿Qué representa el Joker?';
+  const cont = document.getElementById('opciones-joker');
+  cont.innerHTML = '';
+  (data.options || []).forEach(opt => {
+    const rank = typeof opt === 'object' ? opt.rank : opt;
+    const suit = typeof opt === 'object' ? opt.suit : null;
+    const suitName = suit ? (suit.name || String(suit).split('.').pop()) : 'Spades';
+
+    const carta = document.createElement('div');
+    carta.className = 'carta';
+    carta.style.cursor = 'pointer';
+    carta.innerHTML = `<span class="rank ${cardColor(suitName)}">${rank}</span>${suitSVG(suitName)}`;
+    carta.onclick = () => {
+      document.getElementById('modal-joker').classList.remove('activo');
+      const accion = {...state.lastAction};
+      if (data.group_index !== undefined && data.group_index !== null) {
+        accion[`declared_joker_rank_${data.group_index}`] = rank;
+      } else {
+        accion.declared_joker_rank = rank;
+      }
+      enviarAccion(accion);
+    };
+    cont.appendChild(carta);
+  });
+  document.getElementById('modal-joker').classList.add('activo');
+}
+
 // Inicializar
 actualizarSlider(2);
 </script>
