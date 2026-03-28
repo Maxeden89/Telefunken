@@ -1095,24 +1095,23 @@ function bajarJuego() {
     const indices = state.pendingMelds.length > 0
       ? state.pendingMelds[0]
       : [...state.selectedIndices];
-    
-    if (indices.length === 0) {
-      mostrarToast('Seleccioná cartas para agregar o bajar');
-      return;
-    }
-    // Si ya bajó, intentamos agregar al primer grupo pendiente
-    enviarAccion({type: 'MELD', groups: state.pendingMelds.length > 0 ? state.pendingMelds : [indices]});
+    if (indices.length === 0) { mostrarToast('Seleccioná cartas para bajar'); return; }
+    state.pendingMelds = [];
+    const accion = {type: 'LAY_MELD', card_indices: indices};
+    state.lastAction = accion;
+    enviarAccion(accion);
+    state.selectedIndices = [];
   } else {
-    // Si no ha bajado, enviamos todos los grupos preparados
     if (state.pendingMelds.length === 0) {
-      mostrarToast('Prepará tus juegos primero con el botón +');
+      mostrarToast("Primero prepará tus grupos con 'Preparar'");
       return;
     }
-    enviarAccion({type: 'MELD', groups: state.pendingMelds});
+    const accion = {type: 'LAY_ALL_OBJECTIVE', groups_indices: [...state.pendingMelds]};
+    state.lastAction = accion;
+    enviarAccion(accion);
+    state.pendingMelds = [];
+    state.selectedIndices = [];
   }
-  state.pendingMelds = [];
-  state.selectedIndices = [];
-  renderJuego();
 }
 
 function mostrarToast(msg) {
@@ -1124,9 +1123,11 @@ function mostrarToast(msg) {
   }
 }
 
-function siguienteRonda() {
+async function siguienteRonda() {
   document.getElementById('modal-ronda').classList.remove('activo');
-  enviarAccion({type: 'NEXT_ROUND'});
+  try {
+    await fetch(`${SERVER_URL}/sala/siguiente_ronda/${state.codigo}`, {method: 'POST'});
+  } catch(e) { mostrarToast('Error al avanzar ronda'); }
 }
 
 // Inicializar
