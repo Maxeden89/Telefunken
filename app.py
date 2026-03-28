@@ -244,11 +244,10 @@ async def main(page: ft.Page):
 
         if msg_type == "game_state":
             state["game_state"] = data
-            # Si la pantalla de juego no está visible, la mostramos
-            if not any(isinstance(c, ft.Column) and c.expand for c in page.controls):
-                mostrar_pantalla_juego()
-            else:
-                actualizar_interfaz()
+            
+            mostrar_pantalla_juego()
+            
+            actualizar_interfaz()
 
         elif msg_type == "game_start":
             mostrar_pantalla_juego()
