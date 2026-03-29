@@ -6,91 +6,20 @@
 <title>Telefunken Pro</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  
-  body {
-    background: #1a5c2a;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    color: white;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  body { background: #1a5c2a; font-family: 'Segoe UI', Arial, sans-serif; color: white; min-height: 100vh; overflow-x: hidden; }
 
-  /* ── PANTALLA INICIO ── */
-  #pantalla-inicio {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-  }
-
-  .logo-titulo {
-    font-size: 52px;
-    font-weight: 900;
-    color: #f5c842;
-    letter-spacing: 6px;
-    text-transform: uppercase;
-    text-shadow: 3px 3px 0px rgba(0,0,0,0.4);
-    margin-bottom: 6px;
-  }
-
-  .logo-subtitulo {
-    font-size: 13px;
-    color: rgba(255,255,255,0.5);
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    margin-bottom: 40px;
-  }
-
-  .paneles {
-    display: flex;
-    gap: 30px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .panel {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 16px;
-    padding: 28px;
-    width: 280px;
-  }
-
-  .panel h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 18px;
-    color: #f5c842;
-  }
-
-  .panel input, .panel select {
-    width: 100%;
-    padding: 10px 14px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    margin-bottom: 10px;
-    outline: none;
-  }
-
+  /* ── INICIO ── */
+  #pantalla-inicio { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+  .logo-titulo { font-size: 52px; font-weight: 900; color: #f5c842; letter-spacing: 6px; text-transform: uppercase; text-shadow: 3px 3px 0px rgba(0,0,0,0.4); margin-bottom: 6px; }
+  .logo-subtitulo { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; }
+  .paneles { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
+  .panel { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 28px; width: 280px; }
+  .panel h2 { font-size: 18px; font-weight: 600; margin-bottom: 18px; color: #f5c842; }
+  .panel input { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: white; font-size: 14px; margin-bottom: 10px; outline: none; }
   .panel input::placeholder { color: rgba(255,255,255,0.4); }
   .panel input:focus { border-color: #f5c842; }
-
-  .btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.1s, opacity 0.1s;
-    letter-spacing: 1px;
-  }
+  .jugadores-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+  .btn { width: 100%; padding: 12px; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 0.1s, opacity 0.1s; letter-spacing: 1px; }
   .btn:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn:active { transform: translateY(0); }
   .btn-verde { background: #2e9e4f; color: white; }
@@ -100,370 +29,100 @@
   .btn-gris { background: rgba(255,255,255,0.15); color: white; }
   .btn-naranja { background: #e67e22; color: white; }
 
-  .jugadores-inputs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-
-  /* ── SALA ESPERA ── */
-  #pantalla-espera {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 20px;
-    text-align: center;
-  }
-
-  .codigo-sala {
-    font-size: 64px;
-    font-weight: 900;
-    color: #f5c842;
-    background: rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 20px 40px;
-    margin: 16px 0;
-    letter-spacing: 8px;
-  }
-
+  /* ── ESPERA ── */
+  #pantalla-espera { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
+  .codigo-sala { font-size: 64px; font-weight: 900; color: #f5c842; background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px 40px; margin: 16px 0; letter-spacing: 8px; }
   .lista-jugadores { margin-top: 20px; }
-  .jugador-item {
-    background: rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 10px 20px;
-    margin: 6px 0;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .jugador-item { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 20px; margin: 6px 0; font-size: 16px; display: flex; align-items: center; gap: 10px; }
   .jugador-item.conectado { border-left: 3px solid #2e9e4f; }
   .jugador-item.esperando { border-left: 3px solid rgba(255,255,255,0.2); opacity: 0.6; }
 
   /* ── JUEGO ── */
-  #pantalla-juego {
-    display: none;
-    flex-direction: column;
-    min-height: 100vh;
-    padding: 12px;
-  }
-
-  /* INFO SUPERIOR */
-  .info-top {
-    text-align: center;
-    margin-bottom: 8px;
-  }
-
-  .ronda-titulo {
-    font-size: 20px;
-    font-weight: 800;
-    color: white;
-    margin-bottom: 6px;
-  }
-
-  .jugadores-row {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-
-  .jugador-card {
-    background: rgba(255,255,255,0.08);
-    border-radius: 10px;
-    padding: 6px 12px;
-    font-size: 12px;
-    border: 2px solid transparent;
-    transition: all 0.2s;
-  }
-  .jugador-card.activo {
-    border-color: #f5c842;
-    background: rgba(245,200,66,0.15);
-  }
-  .jugador-card.yo { font-weight: 700; }
+  #pantalla-juego { display: none; flex-direction: column; min-height: 100vh; padding: 12px; }
+  .info-top { text-align: center; margin-bottom: 8px; }
+  .ronda-titulo { font-size: 20px; font-weight: 800; color: white; margin-bottom: 6px; }
+  .jugadores-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .jugador-card { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 6px 12px; font-size: 12px; border: 2px solid transparent; transition: all 0.2s; }
+  .jugador-card.activo { border-color: #f5c842; background: rgba(245,200,66,0.15); }
   .jugador-card .nombre { font-size: 13px; font-weight: 600; }
   .jugador-card .detalles { color: rgba(255,255,255,0.6); font-size: 11px; }
-
-  .estado-row {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-  }
-
-  .badge {
-    padding: 4px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-  }
+  .estado-row { display: flex; gap: 10px; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+  .badge { padding: 4px 14px; border-radius: 20px; font-size: 13px; font-weight: 600; }
   .badge-turno-si { background: #2e9e4f; color: white; }
   .badge-turno-no { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); }
   .badge-objetivo-ok { background: #2e9e4f; color: white; }
   .badge-objetivo-no { background: #e67e22; color: white; }
   .badge-grupos { background: #2563eb; color: white; }
-
-  .timer {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 900;
-    transition: background 0.3s;
-  }
+  .timer { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; transition: background 0.3s; }
   .timer-draw { background: #2563eb; }
   .timer-play-ok { background: #2e9e4f; }
   .timer-play-warn { background: #e67e22; }
   .timer-play-danger { background: #dc2626; }
 
-  /* MESA */
-  .mesa {
-    position: relative;
-    min-height: 140px;
-    background: rgba(0,0,0,0.15);
-    border-radius: 12px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    padding: 10px;
-  }
-
-  .mesa-fondo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 90px;
-    font-weight: 900;
-    color: rgba(255,255,255,0.06);
-    letter-spacing: 4px;
-    white-space: nowrap;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .mesa-fondo img {
-    max-width: 90%;
-    max-height: 120px;
-    opacity: 0.12;
-    object-fit: contain;
-  }
-
-  .juegos-container {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    z-index: 1;
-  }
-
-  .juego-card {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 10px;
-    padding: 8px;
-  }
-
-  .juego-titulo {
-    font-size: 11px;
-    color: #f5c842;
-    font-weight: 700;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .btn-agregar {
-    background: none;
-    border: none;
-    color: #f5c842;
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0;
-    line-height: 1;
-  }
+  /* ── MESA ── */
+  .mesa { position: relative; min-height: 140px; background: rgba(0,0,0,0.15); border-radius: 12px; margin-bottom: 8px; overflow: hidden; padding: 10px; }
+  .mesa-fondo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 90px; font-weight: 900; color: rgba(255,255,255,0.06); letter-spacing: 4px; white-space: nowrap; pointer-events: none; user-select: none; }
+  .mesa-fondo img { max-width: 90%; max-height: 120px; opacity: 0.12; object-fit: contain; }
+  .juegos-container { position: relative; display: flex; flex-wrap: wrap; gap: 10px; z-index: 1; }
+  .juego-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 8px; }
+  .juego-titulo { font-size: 11px; color: #f5c842; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .btn-agregar { background: none; border: none; color: #f5c842; cursor: pointer; font-size: 18px; padding: 0; line-height: 1; }
   .btn-agregar:hover { color: white; }
+  .cartas-juego { display: flex; flex-wrap: wrap; gap: 4px; }
 
-  .cartas-juego {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  /* CARTA PEQUEÑA (mesa) */
-  .carta-mini {
-    width: 42px;
-    height: 60px;
-    background: white;
-    border-radius: 6px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    border: 2px solid transparent;
-  }
+  /* ── CARTA MINI (mesa) ── */
+  .carta-mini { width: 42px; height: 60px; background: white; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 2px solid transparent; }
   .carta-mini.joker { border-color: #9333ea; }
   .carta-mini .rank-mini { font-size: 9px; font-weight: 800; position: absolute; top: 3px; left: 4px; }
   .carta-mini svg { width: 22px; height: 22px; }
 
-  /* ZONA INFERIOR */
-  .zona-inferior {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-  }
-
+  /* ── ZONA INFERIOR ── */
+  .zona-inferior { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; flex-wrap: wrap; }
   .pozo-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .pozo-label { font-size: 11px; color: rgba(255,255,255,0.6); }
-
-  /* CARTA GRANDE (mano/pozo) */
-  .carta {
-    width: 70px;
-    height: 100px;
-    background: white;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    cursor: pointer;
-    border: 3px solid transparent;
-    transition: transform 0.15s, border-color 0.15s;
-    user-select: none;
-    flex-shrink: 0;
-  }
-  .carta:hover { transform: translateY(-4px); }
-  .carta.seleccionada { border-color: #3b82f6; background: #fef9c3; transform: translateY(-8px); }
-  .carta.preparada { border-color: #2e9e4f; background: #f0fdf4; opacity: 0.7; }
-  .carta.joker { border-color: #9333ea; }
-  .carta .rank { font-size: 15px; font-weight: 800; position: absolute; top: 5px; left: 6px; }
-  .carta svg { width: 40px; height: 40px; }
-  .carta .badge-orden {
-    position: absolute;
-    top: 4px; right: 4px;
-    width: 18px; height: 18px;
-    background: #3b82f6;
-    border-radius: 50%;
-    font-size: 10px;
-    font-weight: 700;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .carta .check-preparada {
-    position: absolute;
-    bottom: 4px; right: 4px;
-    color: #2e9e4f;
-    font-size: 14px;
-  }
-  .carta-vacia {
-    width: 70px;
-    height: 100px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 10px;
-    border: 2px dashed rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255,255,255,0.3);
-    font-size: 24px;
-  }
-
-  .acciones-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-    flex: 1;
-  }
-
-  .btn-accion {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.1s, opacity 0.1s;
-  }
+  .acciones-container { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; flex: 1; }
+  .btn-accion { padding: 10px 16px; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform 0.1s, opacity 0.1s; }
   .btn-accion:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-accion:active { transform: translateY(0); }
   .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  /* MANO */
-  .mano-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    padding: 8px 0;
-  }
+  /* ── CARTA GRANDE (mano/pozo) ── */
+  .carta { width: 70px; height: 100px; background: white; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: grab; border: 3px solid transparent; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; user-select: none; flex-shrink: 0; }
+  .carta:hover { transform: translateY(-4px); }
+  .carta.seleccionada { border-color: #3b82f6; background: #fef9c3; transform: translateY(-8px); }
+  .carta.preparada { border-color: #2e9e4f; background: #f0fdf4; opacity: 0.7; }
+  .carta.joker { border-color: #9333ea; }
+  .carta.dragging { opacity: 0.4; transform: translateY(-8px); cursor: grabbing; }
+  .carta.drag-over { border-color: #f5c842; background: #fef9c3; transform: translateY(-12px); box-shadow: 0 8px 20px rgba(245,200,66,0.4); }
+  .carta .rank { font-size: 15px; font-weight: 800; position: absolute; top: 5px; left: 6px; }
+  .carta svg { width: 40px; height: 40px; }
+  .carta .badge-orden { position: absolute; top: 4px; right: 4px; width: 18px; height: 18px; background: #3b82f6; border-radius: 50%; font-size: 10px; font-weight: 700; color: white; display: flex; align-items: center; justify-content: center; }
+  .carta .check-preparada { position: absolute; bottom: 4px; right: 4px; color: #2e9e4f; font-size: 14px; }
+  .carta-vacia { width: 70px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-size: 24px; }
 
-  /* MODAL */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.7);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-  }
+  /* ── MANO ── */
+  .mano-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 8px 0; min-height: 120px; }
+
+  /* ── MODALES ── */
+  .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.activo { display: flex; }
-
-  .modal {
-    background: #1e4d2b;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-radius: 16px;
-    padding: 28px;
-    max-width: 420px;
-    width: 90%;
-    text-align: center;
-  }
+  .modal { background: #1e4d2b; border: 2px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 28px; max-width: 420px; width: 90%; text-align: center; }
   .modal h3 { font-size: 20px; font-weight: 800; margin-bottom: 16px; color: #f5c842; }
   .modal p { font-size: 15px; margin-bottom: 20px; color: rgba(255,255,255,0.85); }
   .modal-btns { display: flex; gap: 12px; justify-content: center; }
   .modal-btns .btn { width: auto; padding: 10px 28px; font-size: 15px; }
-
   .opciones-joker { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0; }
 
-  /* TOAST */
-  #toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: rgba(0,0,0,0.85);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 2000;
-    transition: transform 0.3s;
-    max-width: 90%;
-    text-align: center;
-  }
+  /* Timer compra */
+  .timer-compra { width: 50px; height: 50px; border-radius: 50%; background: #e67e22; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto 12px; }
+
+  /* ── TOAST ── */
+  #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 2000; transition: transform 0.3s; max-width: 90%; text-align: center; }
   #toast.visible { transform: translateX(-50%) translateY(0); }
 
-  /* COLORES PALOS */
   .rojo { color: #dc2626; }
   .negro { color: #1a1a1a; }
-
-  hr.separador {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.15);
-    margin: 8px 0;
-  }
+  hr.separador { border: none; border-top: 1px solid rgba(255,255,255,0.15); margin: 8px 0; }
 
   @media (max-width: 600px) {
     .logo-titulo { font-size: 36px; }
@@ -477,42 +136,29 @@
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════
-     PANTALLA INICIO
-══════════════════════════════════════════ -->
+<!-- INICIO -->
 <div id="pantalla-inicio">
   <div class="logo-titulo">Telefunken</div>
   <div class="logo-subtitulo">el juego de cartas</div>
-
   <div class="paneles">
-    <!-- Crear sala -->
     <div class="panel">
       <h2>🃏 Crear Sala</h2>
-      <label style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:6px;display:block;">
-        Jugadores: <span id="lbl-cantidad">2</span>
-      </label>
-      <input type="range" id="slider-jugadores" min="2" max="5" value="2"
-             style="width:100%;margin-bottom:12px;accent-color:#f5c842;"
-             oninput="actualizarSlider(this.value)">
+      <label style="font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:6px;display:block;">Jugadores: <span id="lbl-cantidad">2</span></label>
+      <input type="range" id="slider-jugadores" min="2" max="5" value="2" style="width:100%;margin-bottom:12px;accent-color:#f5c842;" oninput="actualizarSlider(this.value)">
       <div class="jugadores-inputs" id="inputs-jugadores"></div>
       <button class="btn btn-verde" onclick="crearSala()">Crear Sala</button>
     </div>
-
-    <!-- Unirse -->
     <div class="panel">
       <h2>🔗 Unirse a Sala</h2>
-      <input type="text" id="input-codigo" placeholder="Código (ej: AB3XY)"
-             maxlength="5" style="text-transform:uppercase;letter-spacing:4px;font-size:18px;text-align:center;">
+      <input type="text" id="input-codigo" placeholder="Código (ej: AB3XY)" maxlength="5" style="text-transform:uppercase;letter-spacing:4px;font-size:18px;text-align:center;">
       <input type="text" id="input-nombre" placeholder="Tu nombre">
       <button class="btn btn-azul" onclick="unirseSala()">Unirse</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     SALA DE ESPERA
-══════════════════════════════════════════ -->
-<div id="pantalla-espera" style="display:none;">
+<!-- ESPERA -->
+<div id="pantalla-espera" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center;">
   <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">⏳ Esperando jugadores...</h2>
   <p style="color:rgba(255,255,255,0.6);margin-bottom:8px;">Compartí este código con tus amigos:</p>
   <div class="codigo-sala" id="codigo-display">-----</div>
@@ -520,12 +166,8 @@
   <div class="lista-jugadores" id="lista-jugadores-espera"></div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     PANTALLA JUEGO
-══════════════════════════════════════════ -->
+<!-- JUEGO -->
 <div id="pantalla-juego" style="display:none;">
-
-  <!-- INFO TOP -->
   <div class="info-top">
     <div class="ronda-titulo" id="ronda-titulo">RONDA 1/7</div>
     <div class="jugadores-row" id="jugadores-row"></div>
@@ -535,46 +177,32 @@
       <div class="timer" id="timer" style="display:none;">30</div>
     </div>
   </div>
-
   <hr class="separador">
-
-  <!-- MESA -->
   <div class="mesa">
-    <div class="mesa-fondo" id="mesa-fondo">
-      <img src="/assets/telefunken_graffiti.png.png" alt=""
-           onerror="this.parentElement.innerHTML='TELEFUNKEN'">
+    <div class="mesa-fondo">
+      <img src="/assets/telefunken_graffiti.png.png" alt="" onerror="this.parentElement.innerHTML='TELEFUNKEN'">
     </div>
     <div class="juegos-container" id="juegos-container"></div>
   </div>
-
   <hr class="separador">
-
-  <!-- ZONA INFERIOR: POZO + ACCIONES -->
   <div class="zona-inferior">
     <div class="pozo-container">
       <div class="pozo-label">Pozo</div>
       <div id="pozo-carta" class="carta-vacia">🂠</div>
     </div>
-
     <div class="acciones-container">
-      <button class="btn-accion btn-azul" id="btn-mazo" onclick="robar('deck')">📦 Mazo</button>
-      <button class="btn-accion btn-azul" id="btn-descarte" onclick="robar('discard')">♻️ Descarte</button>
-      <button class="btn-accion btn-verde" id="btn-preparar" onclick="prepararJuego()">+ Preparar</button>
-      <button class="btn-accion btn-gris" id="btn-cancelar" onclick="cancelarTodo()">↺ Cancelar</button>
-      <button class="btn-accion btn-naranja" id="btn-bajar" onclick="bajarJuego()">⬇ Bajar</button>
-      <button class="btn-accion btn-rojo" id="btn-descartar" onclick="descartar()">🗑 Descartar</button>
+      <button class="btn-accion btn-azul" onclick="robar('deck')">📦 Mazo</button>
+      <button class="btn-accion btn-azul" onclick="robar('discard')">♻️ Descarte</button>
+      <button class="btn-accion btn-verde" onclick="prepararJuego()">+ Preparar</button>
+      <button class="btn-accion btn-gris" onclick="cancelarTodo()">↺ Cancelar</button>
+      <button class="btn-accion btn-naranja" onclick="bajarJuego()">⬇ Bajar</button>
+      <button class="btn-accion btn-rojo" onclick="descartar()">🗑 Descartar</button>
     </div>
   </div>
-
-  <!-- MANO -->
   <div class="mano-container" id="mano-container"></div>
 </div>
 
-<!-- ══════════════════════════════════════════
-     MODALES
-══════════════════════════════════════════ -->
-
-<!-- Modal genérico Sí/No -->
+<!-- MODAL SI/NO -->
 <div class="modal-overlay" id="modal-sino">
   <div class="modal">
     <h3 id="modal-sino-titulo">Título</h3>
@@ -586,7 +214,7 @@
   </div>
 </div>
 
-<!-- Modal Joker -->
+<!-- MODAL JOKER -->
 <div class="modal-overlay" id="modal-joker">
   <div class="modal">
     <h3>🃏 VALOR DEL COMODÍN</h3>
@@ -595,7 +223,7 @@
   </div>
 </div>
 
-<!-- Modal Fin de Ronda -->
+<!-- MODAL FIN RONDA -->
 <div class="modal-overlay" id="modal-ronda">
   <div class="modal">
     <h3 id="modal-ronda-titulo">🏁 FIN DE LA RONDA</h3>
@@ -606,28 +234,33 @@
   </div>
 </div>
 
-<!-- Toast -->
+<!-- MODAL COMPRA FUERA DE TURNO -->
+<div class="modal-overlay" id="modal-compra">
+  <div class="modal">
+    <h3 id="modal-compra-titulo">🃏 Jugador</h3>
+    <p>¿Querés esta carta del pozo?</p>
+    <div class="timer-compra" id="timer-compra">10</div>
+    <div id="carta-pozo-preview" style="display:flex;justify-content:center;margin-bottom:16px;"></div>
+    <div class="modal-btns">
+      <button class="btn btn-verde" id="compra-si-btn">¡SÍ!</button>
+      <button class="btn btn-gris" id="compra-no-btn">NO</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
-<!-- ══════════════════════════════════════════
-     JAVASCRIPT
-══════════════════════════════════════════ -->
 <script>
 const SERVER_URL = "https://telefunken-1.onrender.com";
 const WS_URL = "wss://telefunken-1.onrender.com";
 
-// ── ESTADO ──
 const state = {
-  codigo: null,
-  myIndex: null,
-  gameState: null,
-  selectedIndices: [],
-  pendingMelds: [],
-  timerInterval: null,
-  timerSeconds: 0,
-  pozoBlockeado: false,
-  ws: null,
-  lastAction: null,
+  codigo: null, myIndex: null, gameState: null,
+  selectedIndices: [], pendingMelds: [],
+  timerInterval: null, timerSeconds: 0,
+  pozoBlockeado: false, ws: null, lastAction: null,
+  dragSrcIndex: null,
+  compraTimer: null, compraCallback: null,
 };
 
 // ── SVGs PALOS ──
@@ -638,23 +271,21 @@ function suitSVG(suit) {
     Hearts: `<svg viewBox="0 0 100 100"><path d="M50 85 Q5 55 5 30 Q5 5 30 5 Q42 5 50 18 Q58 5 70 5 Q95 5 95 30 Q95 55 50 85 Z" fill="#dc2626"/></svg>`,
     Diamonds: `<svg viewBox="0 0 100 100"><polygon points="50,5 95,50 50,95 5,50" fill="#dc2626"/></svg>`,
   };
-  return svgs[suit] || `<svg viewBox="0 0 100 100"><text x="50" y="70" text-anchor="middle" font-size="60">?</text></svg>`;
+  return svgs[suit] || `<svg viewBox="0 0 100 100"><text x="50" y="70" text-anchor="middle" font-size="60" fill="#666">?</text></svg>`;
 }
 
 function cardColor(suit) {
   return (suit === 'Hearts' || suit === 'Diamonds') ? 'rojo' : 'negro';
 }
 
-// ── PANTALLA INICIO ──
+// ── INICIO ──
 function actualizarSlider(val) {
   document.getElementById('lbl-cantidad').textContent = val;
   const cont = document.getElementById('inputs-jugadores');
   cont.innerHTML = '';
   for (let i = 0; i < val; i++) {
     const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.placeholder = `Jugador ${i+1}`;
-    inp.id = `jugador-nombre-${i}`;
+    inp.type = 'text'; inp.placeholder = `Jugador ${i+1}`; inp.id = `jugador-nombre-${i}`;
     cont.appendChild(inp);
   }
 }
@@ -669,31 +300,16 @@ async function crearSala() {
   }
   mostrarToast('Conectando al servidor...');
   try {
-    const res = await fetch(`${SERVER_URL}/sala/crear`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({nombres})
-    });
+    const res = await fetch(`${SERVER_URL}/sala/crear`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({nombres}) });
     const data = await res.json();
-    if (data.ok) {
-      state.codigo = data.codigo;
-      state.myIndex = 0;
-      mostrarEspera(data.codigo, data.jugadores);
-    } else {
-      mostrarToast(data.message || 'Error al crear sala');
-    }
-  } catch(e) {
-    mostrarToast('Error de conexión. El servidor puede estar durmiendo, intentá en 30 segundos.');
-  }
+    if (data.ok) { state.codigo = data.codigo; state.myIndex = 0; mostrarEspera(data.codigo, data.jugadores); }
+    else mostrarToast(data.message || 'Error');
+  } catch(e) { mostrarToast('Error de conexión. El servidor puede estar durmiendo, intentá en 30 segundos.'); }
 }
 
 async function unirseSala() {
   const codigo = document.getElementById('input-codigo').value.trim().toUpperCase();
-  const nombre = document.getElementById('input-nombre').value.trim() || 'Jugador';
-  if (!codigo || codigo.length !== 5) {
-    mostrarToast('Ingresá el código de 5 letras');
-    return;
-  }
+  if (!codigo || codigo.length !== 5) { mostrarToast('Ingresá el código de 5 letras'); return; }
   mostrarToast('Conectando...');
   try {
     const res = await fetch(`${SERVER_URL}/sala/${codigo}`);
@@ -701,51 +317,31 @@ async function unirseSala() {
     if (!data.ok) { mostrarToast('Sala no encontrada'); return; }
     const myIndex = data.connected;
     if (myIndex >= data.jugadores.length) { mostrarToast('La sala está llena'); return; }
-    state.codigo = codigo;
-    state.myIndex = myIndex;
-    const jugadores = data.jugadores.map((n, i) => ({index: i, name: n}));
-    mostrarEspera(codigo, jugadores);
-  } catch(e) {
-    mostrarToast('Error de conexión');
-  }
+    state.codigo = codigo; state.myIndex = myIndex;
+    mostrarEspera(codigo, data.jugadores.map((n, i) => ({index: i, name: n})));
+  } catch(e) { mostrarToast('Error de conexión'); }
 }
 
 function mostrarEspera(codigo, jugadores) {
   document.getElementById('pantalla-inicio').style.display = 'none';
-  const esp = document.getElementById('pantalla-espera');
-  esp.style.display = 'flex';
+  document.getElementById('pantalla-espera').style.display = 'flex';
   document.getElementById('codigo-display').textContent = codigo;
-  renderJugadoresEspera(jugadores);
+  document.getElementById('lista-jugadores-espera').innerHTML = jugadores.map(j => `<div class="jugador-item esperando">👤 ${j.name}</div>`).join('');
   conectarWS();
-}
-
-function renderJugadoresEspera(jugadores) {
-  const lista = document.getElementById('lista-jugadores-espera');
-  lista.innerHTML = jugadores.map(j =>
-    `<div class="jugador-item esperando">👤 ${j.name}</div>`
-  ).join('');
 }
 
 // ── WEBSOCKET ──
 function conectarWS() {
-  const uri = `${WS_URL}/ws/${state.codigo}/${state.myIndex}`;
-  state.ws = new WebSocket(uri);
-
+  state.ws = new WebSocket(`${WS_URL}/ws/${state.codigo}/${state.myIndex}`);
   state.ws.onopen = () => console.log('WS conectado');
   state.ws.onmessage = (e) => procesarMensaje(JSON.parse(e.data));
-  state.ws.onerror = (e) => mostrarToast('Error de conexión WebSocket');
-  state.ws.onclose = () => {
-    mostrarToast('Conexión cerrada. Reconectando...');
-    setTimeout(conectarWS, 3000);
-  };
+  state.ws.onerror = () => mostrarToast('Error WebSocket');
+  state.ws.onclose = () => { mostrarToast('Reconectando...'); setTimeout(conectarWS, 3000); };
 }
 
 function enviarAccion(accion) {
-  if (state.ws && state.ws.readyState === WebSocket.OPEN) {
-    state.ws.send(JSON.stringify(accion));
-  } else {
-    mostrarToast('Sin conexión al servidor');
-  }
+  if (state.ws && state.ws.readyState === WebSocket.OPEN) state.ws.send(JSON.stringify(accion));
+  else mostrarToast('Sin conexión');
 }
 
 function procesarMensaje(data) {
@@ -753,20 +349,17 @@ function procesarMensaje(data) {
     case 'game_state':
       state.gameState = data;
       document.getElementById('pantalla-espera').style.display = 'none';
-      document.getElementById('pantalla-juego').style.display = 'flex';
-      document.getElementById('pantalla-juego').style.flexDirection = 'column';
+      const pj = document.getElementById('pantalla-juego');
+      pj.style.display = 'flex'; pj.style.flexDirection = 'column';
       renderJuego();
       manejarTimer(data);
+      // ✅ Compra fuera de turno — si acaba de descartar y hay jugadores a preguntar
+      if (data._compra_pendiente) {
+        iniciarFlujoCompra(data._compra_pendiente);
+      }
       break;
-
-    case 'game_start':
-      mostrarToast(data.message || '¡Arranca la partida!');
-      break;
-
-    case 'player_joined':
-      mostrarToast(data.message || '');
-      break;
-
+    case 'game_start': mostrarToast(data.message || '¡Arranca!'); break;
+    case 'player_joined': mostrarToast(data.message || ''); break;
     case 'round_over':
       detenerTimer();
       const scores = (data.scores || []).map(s => `${s.name}: ${s.score} pts`).join('\n');
@@ -774,36 +367,79 @@ function procesarMensaje(data) {
       document.getElementById('modal-ronda-content').textContent = scores;
       document.getElementById('modal-ronda').classList.add('activo');
       break;
-
     case 'new_round':
-      state.selectedIndices = [];
-      state.pendingMelds = [];
-      state.pozoBlockeado = false;
+      state.selectedIndices = []; state.pendingMelds = []; state.pozoBlockeado = false;
       document.getElementById('modal-ronda').classList.remove('activo');
       mostrarToast(data.message || 'Nueva ronda');
       break;
-
-    case 'info':
-      mostrarToast(data.message || '');
-      break;
-
-    case 'error':
-      mostrarToast(data.message || 'Error');
-      break;
-
-    case 'ASK_JOKER_VALUE':
-      mostrarModalJoker(data);
-      break;
-
+    case 'info': mostrarToast(data.message || ''); break;
+    case 'error': mostrarToast(data.message || 'Error'); break;
+    case 'ASK_JOKER_VALUE': mostrarModalJoker(data); break;
     case 'ASK_STEAL':
-      mostrarModalSiNo(
-        'SUSTITUCIÓN',
-        data.message || '¿Querés robar el comodín?',
+      mostrarModalSiNo('SUSTITUCIÓN', data.message || '¿Querés robar el comodín?',
         () => enviarAccion({...state.lastAction, steal_decision: 's'}),
-        () => enviarAccion({...state.lastAction, steal_decision: 'n'})
-      );
+        () => enviarAccion({...state.lastAction, steal_decision: 'n'}));
+      break;
+    // ✅ Compra fuera de turno — el servidor manda este evento
+    case 'ASK_OUT_OF_TURN':
+      preguntarCompraFueraTurno(data);
       break;
   }
+}
+
+// ── COMPRA FUERA DE TURNO ──
+function preguntarCompraFueraTurno(data) {
+  const playerName = data.player_name || 'Jugador';
+  const buyerIndex = data.buyer_index;
+  // Solo mostramos el modal al jugador que debe decidir
+  if (buyerIndex !== state.myIndex) return;
+
+  const gs = state.gameState;
+  const discardTop = gs ? gs.discard_top : null;
+
+  // Mostrar carta del pozo
+  const preview = document.getElementById('carta-pozo-preview');
+  if (discardTop && !discardTop.is_joker) {
+    preview.innerHTML = `<div class="carta" style="cursor:default;"><span class="rank ${cardColor(discardTop.suit)}">${discardTop.rank}</span>${suitSVG(discardTop.suit)}</div>`;
+  } else {
+    preview.innerHTML = '';
+  }
+
+  document.getElementById('modal-compra-titulo').textContent = `🃏 ${playerName}`;
+  document.getElementById('modal-compra').classList.add('activo');
+
+  let segundos = 10;
+  document.getElementById('timer-compra').textContent = segundos;
+  document.getElementById('timer-compra').style.background = '#e67e22';
+
+  if (state.compraTimer) clearInterval(state.compraTimer);
+
+  state.compraTimer = setInterval(() => {
+    segundos--;
+    document.getElementById('timer-compra').textContent = segundos;
+    if (segundos <= 3) document.getElementById('timer-compra').style.background = '#dc2626';
+    if (segundos <= 0) {
+      clearInterval(state.compraTimer);
+      cerrarModalCompra();
+      enviarAccion({type: 'OUT_OF_TURN_RESPONSE', buyer_index: buyerIndex, decision: 'no'});
+    }
+  }, 1000);
+
+  document.getElementById('compra-si-btn').onclick = () => {
+    clearInterval(state.compraTimer);
+    cerrarModalCompra();
+    enviarAccion({type: 'OUT_OF_TURN_RESPONSE', buyer_index: buyerIndex, decision: 'si'});
+  };
+
+  document.getElementById('compra-no-btn').onclick = () => {
+    clearInterval(state.compraTimer);
+    cerrarModalCompra();
+    enviarAccion({type: 'OUT_OF_TURN_RESPONSE', buyer_index: buyerIndex, decision: 'no'});
+  };
+}
+
+function cerrarModalCompra() {
+  document.getElementById('modal-compra').classList.remove('activo');
 }
 
 // ── TIMER ──
@@ -811,8 +447,7 @@ function manejarTimer(gs) {
   const esMiTurno = gs.current_player_index === state.myIndex;
   if (esMiTurno) {
     const fase = gs.turn_phase;
-    const ronda = gs.round_number || 1;
-    const segundos = fase === 'DRAW' ? 10 : 30 + (ronda - 1) * 15;
+    const segundos = fase === 'DRAW' ? 10 : 30 + ((gs.round_number || 1) - 1) * 15;
     iniciarTimer(segundos, fase);
   } else {
     detenerTimer();
@@ -822,265 +457,223 @@ function manejarTimer(gs) {
 function iniciarTimer(segundos, fase) {
   detenerTimer();
   state.timerSeconds = segundos;
-  const timerEl = document.getElementById('timer');
-  timerEl.style.display = 'flex';
+  const el = document.getElementById('timer');
+  el.style.display = 'flex';
   actualizarTimerUI(segundos, fase);
-
   state.timerInterval = setInterval(() => {
     state.timerSeconds--;
     actualizarTimerUI(state.timerSeconds, fase);
     if (state.timerSeconds <= 0) {
       detenerTimer();
-      if (fase === 'DRAW') {
-        enviarAccion({type: 'DRAW', source: 'deck'});
-      } else {
-        const gs = state.gameState;
-        if (gs && gs.my_hand && gs.my_hand.length > 0) {
-          enviarAccion({type: 'DISCARD', card_index: 0});
-        }
-      }
+      if (fase === 'DRAW') enviarAccion({type: 'DRAW', source: 'deck'});
+      else { const gs = state.gameState; if (gs && gs.my_hand && gs.my_hand.length > 0) enviarAccion({type: 'DISCARD', card_index: 0}); }
     }
   }, 1000);
 }
 
 function detenerTimer() {
-  if (state.timerInterval) {
-    clearInterval(state.timerInterval);
-    state.timerInterval = null;
-  }
-  const timerEl = document.getElementById('timer');
-  if (timerEl) timerEl.style.display = 'none';
+  if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
+  const el = document.getElementById('timer');
+  if (el) el.style.display = 'none';
 }
 
-function actualizarTimerUI(segundos, fase) {
-  const timerEl = document.getElementById('timer');
-  timerEl.textContent = segundos;
-  timerEl.className = 'timer';
-  if (fase === 'DRAW') {
-    timerEl.classList.add(segundos > 5 ? 'timer-draw' : 'timer-play-danger');
-  } else {
-    if (segundos <= 5) timerEl.classList.add('timer-play-danger');
-    else if (segundos <= 15) timerEl.classList.add('timer-play-warn');
-    else timerEl.classList.add('timer-play-ok');
-  }
+function actualizarTimerUI(s, fase) {
+  const el = document.getElementById('timer');
+  el.textContent = s; el.className = 'timer';
+  if (fase === 'DRAW') el.classList.add(s > 5 ? 'timer-draw' : 'timer-play-danger');
+  else { if (s <= 5) el.classList.add('timer-play-danger'); else if (s <= 15) el.classList.add('timer-play-warn'); else el.classList.add('timer-play-ok'); }
 }
 
-// ── RENDER JUEGO ──
+// ── RENDER ──
 function renderJuego() {
   const gs = state.gameState;
   if (!gs) return;
-
   const objetivos = {1:'1 juego de 3+',2:'2 juegos de 3+',3:'1 de 4+',4:'2 de 4+',5:'1 de 5+',6:'2 de 5+',7:'1 de 6+'};
-  document.getElementById('ronda-titulo').textContent =
-    `RONDA ${gs.round_number}/7 | OBJETIVO: ${objetivos[gs.round_number] || ''}`;
+  document.getElementById('ronda-titulo').textContent = `RONDA ${gs.round_number}/7 | OBJETIVO: ${objetivos[gs.round_number] || ''}`;
 
-  // Jugadores
-  const jugRow = document.getElementById('jugadores-row');
-  jugRow.innerHTML = gs.players.map(p => {
-    const activo = p.index === gs.current_player_index;
-    const yo = p.index === state.myIndex;
-    return `<div class="jugador-card ${activo ? 'activo' : ''} ${yo ? 'yo' : ''}">
-      <div class="nombre">${yo ? '👤 ' : ''}${p.name}${activo ? ' ⭐' : ''}</div>
-      <div class="detalles">🃏 ${p.hand_count} | 🛒 ${p.purchases_used}/7</div>
-    </div>`;
+  document.getElementById('jugadores-row').innerHTML = gs.players.map(p => {
+    const activo = p.index === gs.current_player_index, yo = p.index === state.myIndex;
+    return `<div class="jugador-card ${activo?'activo':''} ${yo?'yo':''}"><div class="nombre">${yo?'👤 ':''}${p.name}${activo?' ⭐':''}</div><div class="detalles">🃏 ${p.hand_count} | 🛒 ${p.purchases_used}/7</div></div>`;
   }).join('');
 
-  // Badge turno
   const esMiTurno = gs.current_player_index === state.myIndex;
   const currentP = gs.players.find(p => p.index === gs.current_player_index);
-  const badgeTurno = document.getElementById('badge-turno');
-  badgeTurno.textContent = esMiTurno ? '🟢 TU TURNO' : `⏳ Turno de ${currentP ? currentP.name : ''}`;
-  badgeTurno.className = `badge ${esMiTurno ? 'badge-turno-si' : 'badge-turno-no'}`;
+  const bt = document.getElementById('badge-turno');
+  bt.textContent = esMiTurno ? '🟢 TU TURNO' : `⏳ Turno de ${currentP ? currentP.name : ''}`;
+  bt.className = `badge ${esMiTurno ? 'badge-turno-si' : 'badge-turno-no'}`;
 
-  // Badge objetivo
   const myP = gs.players.find(p => p.index === state.myIndex);
-  const badgeObj = document.getElementById('badge-objetivo');
-  if (myP && myP.has_met_objective) {
-    badgeObj.textContent = '✅ OBJETIVO CUMPLIDO';
-    badgeObj.className = 'badge badge-objetivo-ok';
-  } else if (state.pendingMelds.length > 0) {
-    badgeObj.textContent = `📦 Grupos: ${state.pendingMelds.length}`;
-    badgeObj.className = 'badge badge-grupos';
-  } else {
-    badgeObj.textContent = '🎯 Pendiente';
-    badgeObj.className = 'badge badge-objetivo-no';
-  }
+  const bo = document.getElementById('badge-objetivo');
+  if (myP && myP.has_met_objective) { bo.textContent = '✅ OBJETIVO CUMPLIDO'; bo.className = 'badge badge-objetivo-ok'; }
+  else if (state.pendingMelds.length > 0) { bo.textContent = `📦 Grupos: ${state.pendingMelds.length}`; bo.className = 'badge badge-grupos'; }
+  else { bo.textContent = '🎯 Pendiente'; bo.className = 'badge badge-objetivo-no'; }
 
-  renderMesa();
-  renderPozo();
-  renderMano();
+  renderMesa(); renderPozo(); renderMano();
 }
 
 function renderMesa() {
   const gs = state.gameState;
   const cont = document.getElementById('juegos-container');
   cont.innerHTML = '';
-
   (gs.melds || []).forEach((meld, i) => {
-    const div = document.createElement('div');
-    div.className = 'juego-card';
-    div.innerHTML = `
-      <div class="juego-titulo">
-        Juego ${i+1}
-        <button class="btn-agregar" onclick="agregarAJuego(${i})" title="Agregar carta">＋</button>
-      </div>
-      <div class="cartas-juego">
-        ${meld.cards.map(c => renderCartaMini(c)).join('')}
-      </div>`;
+    const div = document.createElement('div'); div.className = 'juego-card';
+    div.innerHTML = `<div class="juego-titulo">Juego ${i+1}<button class="btn-agregar" onclick="agregarAJuego(${i})">＋</button></div><div class="cartas-juego">${meld.cards.map(c => renderCartaMini(c)).join('')}</div>`;
     cont.appendChild(div);
   });
 }
 
 function renderCartaMini(card) {
-  if (card.is_joker) {
-    const rep = card.rep_rank || 'JK';
-    return `<div class="carta-mini joker">
-      <span class="rank-mini" style="color:#9333ea;">J(${rep})</span>
-      <span style="font-size:20px;">🃏</span>
-    </div>`;
-  }
-  return `<div class="carta-mini">
-    <span class="rank-mini ${cardColor(card.suit)}">${card.rank}</span>
-    ${suitSVG(card.suit)}
-  </div>`;
+  if (card.is_joker) return `<div class="carta-mini joker"><span class="rank-mini" style="color:#9333ea;">J(${card.rep_rank||'JK'})</span><span style="font-size:20px;">🃏</span></div>`;
+  return `<div class="carta-mini"><span class="rank-mini ${cardColor(card.suit)}">${card.rank}</span>${suitSVG(card.suit)}</div>`;
 }
 
 function renderPozo() {
-  const gs = state.gameState;
-  const el = document.getElementById('pozo-carta');
+  const gs = state.gameState, el = document.getElementById('pozo-carta');
   if (gs.discard_top) {
     const c = gs.discard_top;
-    if (c.is_joker) {
-      el.className = 'carta joker';
-      el.innerHTML = `<span class="rank">🃏</span><span style="font-size:36px;">🃏</span>`;
-    } else {
-      el.className = 'carta';
-      el.innerHTML = `<span class="rank ${cardColor(c.suit)}">${c.rank}</span>${suitSVG(c.suit)}`;
-    }
-  } else {
-    el.className = 'carta-vacia';
-    el.innerHTML = '🂠';
-  }
+    if (c.is_joker) { el.className = 'carta joker'; el.innerHTML = `<span class="rank">🃏</span><span style="font-size:36px;">🃏</span>`; }
+    else { el.className = 'carta'; el.innerHTML = `<span class="rank ${cardColor(c.suit)}">${c.rank}</span>${suitSVG(c.suit)}`; }
+  } else { el.className = 'carta-vacia'; el.innerHTML = '🂠'; }
 }
 
+// ── MANO CON DRAG & DROP ──
 function renderMano() {
-  const gs = state.gameState;
-  const cont = document.getElementById('mano-container');
+  const gs = state.gameState, cont = document.getElementById('mano-container');
   cont.innerHTML = '';
-
   (gs.my_hand || []).forEach((card, i) => {
-    const seleccionado = state.selectedIndices.includes(i);
-    const preparada = state.pendingMelds.some(g => g.includes(i));
+    const sel = state.selectedIndices.includes(i);
+    const prep = state.pendingMelds.some(g => g.includes(i));
     const orden = state.selectedIndices.indexOf(i);
-
     let clases = 'carta';
-    if (seleccionado) clases += ' seleccionada';
-    if (preparada) clases += ' preparada';
+    if (sel) clases += ' seleccionada';
+    if (prep) clases += ' preparada';
     if (card.is_joker) clases += ' joker';
 
     let contenido = '';
     if (card.is_joker) {
-      const rep = card.rep_rank;
-      contenido = `<span class="rank" style="color:#9333ea;">${rep ? `J(${rep})` : '🃏'}</span><span style="font-size:36px;">🃏</span>`;
+      contenido = `<span class="rank" style="color:#9333ea;">${card.rep_rank ? `J(${card.rep_rank})` : '🃏'}</span><span style="font-size:36px;">🃏</span>`;
     } else {
       contenido = `<span class="rank ${cardColor(card.suit)}">${card.rank}</span>${suitSVG(card.suit)}`;
     }
-
-    if (seleccionado && orden >= 0) {
-      contenido += `<div class="badge-orden">${orden+1}</div>`;
-    }
-    if (preparada) {
-      contenido += `<div class="check-preparada">✓</div>`;
-    }
+    if (sel && orden >= 0) contenido += `<div class="badge-orden">${orden+1}</div>`;
+    if (prep) contenido += `<div class="check-preparada">✓</div>`;
 
     const div = document.createElement('div');
     div.className = clases;
     div.innerHTML = contenido;
-    div.onclick = () => toggleCarta(i);
+    div.dataset.index = i;
+
+    // ✅ DRAG & DROP
+    div.draggable = true;
+    div.addEventListener('dragstart', onDragStart);
+    div.addEventListener('dragover', onDragOver);
+    div.addEventListener('dragleave', onDragLeave);
+    div.addEventListener('drop', onDrop);
+    div.addEventListener('dragend', onDragEnd);
+
+    // Click para seleccionar
+    div.addEventListener('click', (e) => {
+      if (prep) return;
+      const idx = parseInt(div.dataset.index);
+      const pos = state.selectedIndices.indexOf(idx);
+      if (pos >= 0) state.selectedIndices.splice(pos, 1);
+      else state.selectedIndices.push(idx);
+      renderMano(); renderBadgeObjetivo();
+    });
+
     cont.appendChild(div);
   });
 }
 
-// ── ACCIONES ──
-function toggleCarta(i) {
-  if (state.pendingMelds.some(g => g.includes(i))) return;
-  const idx = state.selectedIndices.indexOf(i);
-  if (idx >= 0) state.selectedIndices.splice(idx, 1);
-  else state.selectedIndices.push(i);
+// ── DRAG & DROP HANDLERS ──
+function onDragStart(e) {
+  state.dragSrcIndex = parseInt(e.currentTarget.dataset.index);
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', state.dragSrcIndex);
+}
+
+function onDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  e.currentTarget.classList.add('drag-over');
+}
+
+function onDragLeave(e) {
+  e.currentTarget.classList.remove('drag-over');
+}
+
+function onDrop(e) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  const dstIndex = parseInt(e.currentTarget.dataset.index);
+  const srcIndex = state.dragSrcIndex;
+  if (srcIndex === null || srcIndex === dstIndex) return;
+
+  // Reordenar la mano localmente
+  const hand = state.gameState.my_hand;
+  const card = hand.splice(srcIndex, 1)[0];
+  hand.splice(dstIndex, 0, card);
+
+  // Remap índices seleccionados y pendientes
+  function remap(idx) {
+    if (idx === srcIndex) return dstIndex;
+    if (srcIndex < dstIndex) { if (idx > srcIndex && idx <= dstIndex) return idx - 1; }
+    else { if (idx >= dstIndex && idx < srcIndex) return idx + 1; }
+    return idx;
+  }
+  state.selectedIndices = state.selectedIndices.map(remap);
+  state.pendingMelds = state.pendingMelds.map(g => g.map(remap));
+  state.dragSrcIndex = null;
   renderMano();
-  renderBadgeObjetivo();
+}
+
+function onDragEnd(e) {
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.carta.drag-over').forEach(el => el.classList.remove('drag-over'));
+  state.dragSrcIndex = null;
 }
 
 function renderBadgeObjetivo() {
-  const gs = state.gameState;
-  if (!gs) return;
+  const gs = state.gameState; if (!gs) return;
   const myP = gs.players.find(p => p.index === state.myIndex);
-  const badgeObj = document.getElementById('badge-objetivo');
-  if (myP && myP.has_met_objective) {
-    badgeObj.textContent = '✅ OBJETIVO CUMPLIDO';
-    badgeObj.className = 'badge badge-objetivo-ok';
-  } else if (state.pendingMelds.length > 0) {
-    badgeObj.textContent = `📦 Grupos: ${state.pendingMelds.length}`;
-    badgeObj.className = 'badge badge-grupos';
-  } else {
-    badgeObj.textContent = '🎯 Pendiente';
-    badgeObj.className = 'badge badge-objetivo-no';
-  }
+  const bo = document.getElementById('badge-objetivo');
+  if (myP && myP.has_met_objective) { bo.textContent = '✅ OBJETIVO CUMPLIDO'; bo.className = 'badge badge-objetivo-ok'; }
+  else if (state.pendingMelds.length > 0) { bo.textContent = `📦 Grupos: ${state.pendingMelds.length}`; bo.className = 'badge badge-grupos'; }
+  else { bo.textContent = '🎯 Pendiente'; bo.className = 'badge badge-objetivo-no'; }
 }
 
+// ── ACCIONES ──
 function robar(source) {
-  if (source === 'discard' && state.pozoBlockeado) {
-    mostrarToast('El pozo fue comprado, robá del mazo');
-    return;
-  }
-  detenerTimer();
-  state.pozoBlockeado = false;
+  if (source === 'discard' && state.pozoBlockeado) { mostrarToast('El pozo fue comprado, robá del mazo'); return; }
+  detenerTimer(); state.pozoBlockeado = false;
   enviarAccion({type: 'DRAW', source});
 }
 
 function prepararJuego() {
-  if (state.selectedIndices.length === 0) {
-    mostrarToast('Seleccioná cartas primero');
-    return;
-  }
+  if (state.selectedIndices.length === 0) { mostrarToast('Seleccioná cartas primero'); return; }
   state.pendingMelds.push([...state.selectedIndices]);
   state.selectedIndices = [];
-  renderMano();
-  renderBadgeObjetivo();
+  renderMano(); renderBadgeObjetivo();
 }
 
 function cancelarTodo() {
-  state.pendingMelds = [];
-  state.selectedIndices = [];
-  renderMano();
-  renderBadgeObjetivo();
+  state.pendingMelds = []; state.selectedIndices = [];
+  renderMano(); renderBadgeObjetivo();
 }
 
 function descartar() {
   const gs = state.gameState;
-  if (gs && gs.turn_phase === 'DRAW') {
-    mostrarToast('Primero robá una carta');
-    return;
-  }
-  if (state.selectedIndices.length === 0) {
-    mostrarToast('Seleccioná una carta para descartar');
-    return;
-  }
+  if (gs && gs.turn_phase === 'DRAW') { mostrarToast('Primero robá una carta'); return; }
+  if (state.selectedIndices.length === 0) { mostrarToast('Seleccioná una carta para descartar'); return; }
   detenerTimer();
   enviarAccion({type: 'DISCARD', card_index: state.selectedIndices[0]});
   state.selectedIndices = [];
 }
 
 function agregarAJuego(meldIdx) {
-  if (state.selectedIndices.length === 0) {
-    mostrarToast('Seleccioná una carta primero');
-    return;
-  }
-  const accion = {
-    type: 'ADD_TO_MELD',
-    meld_index: meldIdx,
-    card_indices: [...state.selectedIndices]
-  };
+  if (state.selectedIndices.length === 0) { mostrarToast('Seleccioná una carta primero'); return; }
+  const accion = {type: 'ADD_TO_MELD', meld_index: meldIdx, card_indices: [...state.selectedIndices]};
   state.lastAction = accion;
   enviarAccion(accion);
   state.selectedIndices = [];
@@ -1090,46 +683,27 @@ function bajarJuego() {
   const gs = state.gameState;
   const myP = gs ? gs.players.find(p => p.index === state.myIndex) : null;
   if (!myP) return;
-
   if (myP.has_met_objective) {
-    const indices = state.pendingMelds.length > 0
-      ? state.pendingMelds[0]
-      : [...state.selectedIndices];
+    const indices = state.pendingMelds.length > 0 ? state.pendingMelds[0] : [...state.selectedIndices];
     if (indices.length === 0) { mostrarToast('Seleccioná cartas para bajar'); return; }
     state.pendingMelds = [];
     const accion = {type: 'LAY_MELD', card_indices: indices};
-    state.lastAction = accion;
-    enviarAccion(accion);
-    state.selectedIndices = [];
+    state.lastAction = accion; enviarAccion(accion); state.selectedIndices = [];
   } else {
-    if (state.pendingMelds.length === 0) {
-      mostrarToast("Primero prepará tus grupos con 'Preparar'");
-      return;
-    }
+    if (state.pendingMelds.length === 0) { mostrarToast("Primero prepará tus grupos con 'Preparar'"); return; }
     const accion = {type: 'LAY_ALL_OBJECTIVE', groups_indices: [...state.pendingMelds]};
-    state.lastAction = accion;
-    enviarAccion(accion);
-    state.pendingMelds = [];
-    state.selectedIndices = [];
-  }
-}
-
-function mostrarToast(msg) {
-  const t = document.getElementById('toast');
-  if (t) {
-    t.textContent = msg;
-    t.classList.add('visible');
-    setTimeout(() => t.classList.remove('visible'), 3000);
+    state.lastAction = accion; enviarAccion(accion);
+    state.pendingMelds = []; state.selectedIndices = [];
   }
 }
 
 async function siguienteRonda() {
   document.getElementById('modal-ronda').classList.remove('activo');
-  try {
-    await fetch(`${SERVER_URL}/sala/siguiente_ronda/${state.codigo}`, {method: 'POST'});
-  } catch(e) { mostrarToast('Error al avanzar ronda'); }
+  try { await fetch(`${SERVER_URL}/sala/siguiente_ronda/${state.codigo}`, {method: 'POST'}); }
+  catch(e) { mostrarToast('Error al avanzar ronda'); }
 }
 
+// ── MODALES ──
 function mostrarModalSiNo(titulo, msg, onSi, onNo) {
   document.getElementById('modal-sino-titulo').textContent = titulo;
   document.getElementById('modal-sino-msg').textContent = msg;
@@ -1145,21 +719,31 @@ function mostrarModalJoker(data) {
   cont.innerHTML = '';
   (data.options || []).forEach(opt => {
     const rank = typeof opt === 'object' ? opt.rank : opt;
-    const suit = typeof opt === 'object' ? opt.suit : null;
-    const suitName = suit ? (suit.name || String(suit).split('.').pop()) : 'Spades';
+    // ✅ Fix: resolver el suit correctamente
+    let suitName = 'Spades';
+    if (typeof opt === 'object' && opt.suit) {
+      const s = opt.suit;
+      if (typeof s === 'string') {
+        // puede venir como "Suit.Hearts" o "Hearts"
+        suitName = s.includes('.') ? s.split('.').pop() : s;
+        // Capitalizar
+        suitName = suitName.charAt(0).toUpperCase() + suitName.slice(1).toLowerCase();
+        // Mapear variantes
+        const mapa = {Hearts:'Hearts', Diamonds:'Diamonds', Spades:'Spades', Clubs:'Clubs', hearts:'Hearts', diamonds:'Diamonds', spades:'Spades', clubs:'Clubs'};
+        suitName = mapa[suitName] || 'Spades';
+      } else if (s && s.name) {
+        suitName = s.name;
+      }
+    }
 
     const carta = document.createElement('div');
-    carta.className = 'carta';
-    carta.style.cursor = 'pointer';
+    carta.className = 'carta'; carta.style.cursor = 'pointer';
     carta.innerHTML = `<span class="rank ${cardColor(suitName)}">${rank}</span>${suitSVG(suitName)}`;
     carta.onclick = () => {
       document.getElementById('modal-joker').classList.remove('activo');
       const accion = {...state.lastAction};
-      if (data.group_index !== undefined && data.group_index !== null) {
-        accion[`declared_joker_rank_${data.group_index}`] = rank;
-      } else {
-        accion.declared_joker_rank = rank;
-      }
+      if (data.group_index !== undefined && data.group_index !== null) accion[`declared_joker_rank_${data.group_index}`] = rank;
+      else accion.declared_joker_rank = rank;
       enviarAccion(accion);
     };
     cont.appendChild(carta);
@@ -1167,8 +751,14 @@ function mostrarModalJoker(data) {
   document.getElementById('modal-joker').classList.add('activo');
 }
 
-// Inicializar
-actualizarSlider(2);
+// ── TOAST ──
+let toastTimeout = null;
+function mostrarToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('visible');
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.classList.remove('visible'), 3000);
+}
 </script>
 </body>
 </html>

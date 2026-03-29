@@ -17,8 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- SALAS EN MEMORIA ---
-# salas = { "ABCD": { "game": Game, "players": { "ABCD_0": ws, ... }, "player_names": [...] } }
 salas = {}
 
 
@@ -27,7 +25,6 @@ def generar_codigo():
 
 
 def get_card_data(card):
-    """Convierte una carta a dict serializable."""
     if card.is_joker:
         return {
             "is_joker": True,
@@ -48,14 +45,9 @@ def get_card_data(card):
 
 
 def get_game_state(sala_data, for_player_index):
-    """
-    Construye el estado del juego para un jugador específico.
-    Cada jugador solo ve sus propias cartas.
-    """
     game = sala_data["game"]
     players = game.players
 
-    # Info de todos los jugadores (sin sus cartas privadas)
     players_info = []
     for i, p in enumerate(players):
         players_info.append({
@@ -68,13 +60,11 @@ def get_game_state(sala_data, for_player_index):
             "is_current": i == game.current_player_index,
         })
 
-    # Solo las cartas del jugador que recibe el estado
     my_hand = []
     if for_player_index < len(players):
         for card in players[for_player_index].hand:
             my_hand.append(get_card_data(card))
 
-    # Juegos en mesa
     melds = []
     for meld in game.melds:
         melds.append({
@@ -82,7 +72,6 @@ def get_game_state(sala_data, for_player_index):
             "cards": [get_card_data(c) for c in meld.cards],
         })
 
-    # Carta del pozo
     discard_top = None
     if game.discard_pile:
         discard_top = get_card_data(game.discard_pile[-1])
@@ -103,7 +92,6 @@ def get_game_state(sala_data, for_player_index):
 
 
 async def broadcast_state(codigo):
-    """Manda el estado actualizado a cada jugador de la sala."""
     sala = salas.get(codigo)
     if not sala:
         return
@@ -116,7 +104,6 @@ async def broadcast_state(codigo):
 
 
 async def send_to_player(codigo, player_index, msg: dict):
-    """Manda un mensaje a un jugador específico."""
     sala = salas.get(codigo)
     if not sala:
         return
@@ -129,7 +116,6 @@ async def send_to_player(codigo, player_index, msg: dict):
 
 
 async def broadcast_message(codigo, msg: dict):
-    """Manda un mensaje a todos los jugadores de la sala."""
     sala = salas.get(codigo)
     if not sala:
         return
@@ -138,6 +124,30 @@ async def broadcast_message(codigo, msg: dict):
             await ws.send_text(json.dumps(msg))
         except Exception:
             pass
+
+
+async def preguntar_siguiente_jugador(codigo: str):
+    """Pregunta al siguiente jugador pendiente si quiere la carta del pozo."""
+    sala = salas.get(codigo)
+    if not sala:
+        return
+
+    pendientes = sala.get("compra_pendiente", [])
+
+    if not pendientes or not sala["game"].discard_pile:
+        # Nadie quiso — mandamos estado final para que arranque el turno
+        sala["compra_pendiente"] = []
+        await broadcast_state(codigo)
+        return
+
+    idx = pendientes[0]
+    jugador = sala["game"].players[idx]
+
+    await send_to_player(codigo, idx, {
+        "type": "ASK_OUT_OF_TURN",
+        "buyer_index": idx,
+        "player_name": jugador.name,
+    })
 
 
 @app.websocket("/ws/{codigo}/{player_index}")
@@ -151,11 +161,9 @@ async def websocket_endpoint(websocket: WebSocket, codigo: str, player_index: in
         await websocket.close()
         return
 
-    # Registramos la conexión
     sala["connections"][player_index] = websocket
     sala["connected"].add(player_index)
 
-    # Avisamos a todos que se conectó
     player_name = sala["game"].players[player_index].name
     await broadcast_message(codigo, {
         "type": "player_joined",
@@ -165,7 +173,6 @@ async def websocket_endpoint(websocket: WebSocket, codigo: str, player_index: in
         "total_players": len(sala["game"].players),
     })
 
-    # Si todos están conectados, mandamos el estado inicial
     if len(sala["connected"]) == len(sala["game"].players):
         await broadcast_message(codigo, {"type": "game_start", "message": "¡Todos conectados! Arranca la partida."})
         await broadcast_state(codigo)
@@ -175,7 +182,6 @@ async def websocket_endpoint(websocket: WebSocket, codigo: str, player_index: in
             data = await websocket.receive_text()
             action = json.loads(data)
             print(f"Acción de jugador {player_index}: {action}")
-
             await handle_action(codigo, player_index, action)
 
     except WebSocketDisconnect:
@@ -189,7 +195,6 @@ async def websocket_endpoint(websocket: WebSocket, codigo: str, player_index: in
 
 
 async def handle_action(codigo: str, player_index: int, action: dict):
-    """Procesa una acción del juego y broadcast el nuevo estado."""
     sala = salas.get(codigo)
     if not sala:
         return
@@ -197,7 +202,50 @@ async def handle_action(codigo: str, player_index: int, action: dict):
     game = sala["game"]
     action_type = action.get("type")
 
-    # Verificamos que sea el turno de este jugador para acciones de juego
+    # ✅ Respuesta a compra fuera de turno
+    if action_type == "OUT_OF_TURN_RESPONSE":
+        decision = action.get("decision")
+        buyer_index = action.get("buyer_index")
+        pendientes = sala.get("compra_pendiente", [])
+
+        # Verificamos que sea el jugador correcto respondiendo
+        if not pendientes or pendientes[0] != buyer_index:
+            return
+
+        if decision == "si":
+            # Es el jugador en turno → robo normal del pozo (+2)
+            es_turno_actual = buyer_index == game.current_player_index
+            if es_turno_actual:
+                res = game.apply_action({"type": "DRAW", "source": "discard"})
+            else:
+                res = game.apply_action({
+                    "type": "OUT_OF_TURN_PURCHASE",
+                    "buyer_index": buyer_index
+                })
+
+            if res["ok"]:
+                sala["compra_pendiente"] = []
+                sala["compra_bloqueada"] = True
+                await broadcast_state(codigo)
+                await broadcast_message(codigo, {
+                    "type": "info",
+                    "message": res.get("message", f"{game.players[buyer_index].name} compró del pozo")
+                })
+            else:
+                await send_to_player(codigo, buyer_index, {
+                    "type": "error",
+                    "message": res.get("message", "No se pudo comprar")
+                })
+                # Pasar al siguiente
+                sala["compra_pendiente"] = pendientes[1:]
+                await preguntar_siguiente_jugador(codigo)
+        else:
+            # NO → pasar al siguiente
+            sala["compra_pendiente"] = pendientes[1:]
+            await preguntar_siguiente_jugador(codigo)
+        return
+
+    # Verificamos turno para acciones normales
     acciones_de_turno = {"DRAW", "LAY_MELD", "LAY_ALL_OBJECTIVE", "ADD_TO_MELD", "DISCARD"}
     if action_type in acciones_de_turno and player_index != game.current_player_index:
         await send_to_player(codigo, player_index, {
@@ -210,7 +258,6 @@ async def handle_action(codigo: str, player_index: int, action: dict):
     res = game.apply_action(action)
 
     if res["ok"]:
-        # Si hay ganador, calculamos scores y avisamos
         if game.winner:
             await broadcast_message(codigo, {
                 "type": "round_over",
@@ -218,19 +265,29 @@ async def handle_action(codigo: str, player_index: int, action: dict):
                 "scores": [{"name": p.name, "score": p.score} for p in game.players],
             })
 
-        # Mandamos estado actualizado a todos
         await broadcast_state(codigo)
 
-        # Si el resultado tiene mensaje, lo mandamos
         if res.get("message"):
             await broadcast_message(codigo, {
                 "type": "info",
                 "message": res["message"],
             })
 
+        # ✅ Después de un descarte exitoso → preguntar compra fuera de turno
+        if action_type == "DISCARD" and not game.winner:
+            n = len(game.players)
+            if n >= 2 and game.discard_pile:
+                jugadores_a_preguntar = []
+                for offset in range(n - 1):
+                    idx = (game.current_player_index + offset) % n
+                    jugadores_a_preguntar.append(idx)
+
+                sala["compra_pendiente"] = jugadores_a_preguntar
+                sala["compra_bloqueada"] = False
+                await preguntar_siguiente_jugador(codigo)
+
     else:
         if res.get("type") in ("ASK_JOKER_VALUE", "ASK_STEAL"):
-    # ✅ Serializamos las opciones del Joker antes de mandar
             if "options" in res:
                 options_serializables = []
                 for opt in res["options"]:
@@ -250,25 +307,9 @@ async def handle_action(codigo: str, player_index: int, action: dict):
                 "message": res.get("message", "Acción inválida"),
             })
 
-    # Compra fuera de turno — acción especial
-    if action_type == "OUT_OF_TURN_PURCHASE":
-        res = game.apply_action(action)
-        if res["ok"]:
-            await broadcast_state(codigo)
-            await broadcast_message(codigo, {
-                "type": "info",
-                "message": res["message"],
-            })
-        else:
-            await send_to_player(codigo, player_index, {
-                "type": "error",
-                "message": res.get("message", "No se pudo comprar"),
-            })
-
 
 @app.post("/sala/crear")
 async def crear_sala(data: dict):
-    """Crea una nueva sala de juego."""
     nombres = data.get("nombres", [])
     if len(nombres) < 2 or len(nombres) > 5:
         return {"ok": False, "message": "Se necesitan entre 2 y 5 jugadores"}
@@ -282,8 +323,10 @@ async def crear_sala(data: dict):
 
     salas[codigo] = {
         "game": game,
-        "connections": {},   # { player_index: websocket }
-        "connected": set(),  # índices conectados
+        "connections": {},
+        "connected": set(),
+        "compra_pendiente": [],
+        "compra_bloqueada": False,
     }
 
     print(f"Sala {codigo} creada con jugadores: {nombres}")
@@ -297,12 +340,13 @@ async def crear_sala(data: dict):
 
 @app.post("/sala/siguiente_ronda/{codigo}")
 async def siguiente_ronda(codigo: str):
-    """Avanza a la siguiente ronda."""
     sala = salas.get(codigo)
     if not sala:
         return {"ok": False, "message": "Sala no encontrada"}
 
     sala["game"].start_next_round()
+    sala["compra_pendiente"] = []
+    sala["compra_bloqueada"] = False
     await broadcast_state(codigo)
     await broadcast_message(codigo, {"type": "new_round", "message": f"Ronda {sala['game'].round_number} iniciada"})
     return {"ok": True}
@@ -310,7 +354,6 @@ async def siguiente_ronda(codigo: str):
 
 @app.get("/sala/{codigo}")
 async def info_sala(codigo: str):
-    """Info básica de una sala."""
     sala = salas.get(codigo)
     if not sala:
         return {"ok": False, "message": "Sala no encontrada"}
