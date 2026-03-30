@@ -137,7 +137,7 @@ def can_add_to_meld(meld, card):
     # 4. Reglas para Piernas (SET)
     elif meld.is_set():
         # En un SET no puede haber más de 4 cartas (una de cada palo) o 5 con Joker
-        if len(meld.cards) >= 5: return False
+        if len(meld.cards) >= 8: return False
         
         # Debe coincidir el rango con las cartas reales del juego
         carta_real = next((c for c in meld.cards if not c.is_joker), None)

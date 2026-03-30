@@ -58,11 +58,20 @@ class Game:
             return {"ok": False, "message": "No podés robar ahora"}
         
         if action.get("source") == "deck":
+    # ✅ Si el mazo está vacío, reciclar el pozo
+            if not self.deck:
+                if len(self.discard_pile) > 1:
+                    top = self.discard_pile.pop()
+                    import random
+                    random.shuffle(self.discard_pile)
+                    self.deck = self.discard_pile[:]
+                    self.discard_pile = [top]
+                    print("DEBUG: Mazo reciclado del pozo")
             if self.deck:
                 player.hand.append(self.deck.pop())
             self.turn_phase = "PLAY"
             return {"ok": True}
-        
+            
         if action.get("source") == "discard":
             res = self._handle_purchase(player, out_of_turn=False)
             if res["ok"]: self.turn_phase = "PLAY"
@@ -491,11 +500,18 @@ class Game:
         player.hand.append(self.discard_pile.pop())
         extra = 1 if out_of_turn else 2
         for _ in range(extra):
-            if self.deck: player.hand.append(self.deck.pop())
-        player.purchases_used += 1
-        msg = f"Compraste del pozo (+{extra} {'carta' if extra == 1 else 'cartas'})"
-        print(f"DEBUG: {player.name} compró — out_of_turn={out_of_turn} | +{extra} cartas")
-        return {"ok": True, "message": msg}
+            if not self.deck and len(self.discard_pile) > 1:
+                top = self.discard_pile.pop()
+                import random
+                random.shuffle(self.discard_pile)
+                self.deck = self.discard_pile[:]
+                self.discard_pile = [top]
+            if self.deck:
+                player.hand.append(self.deck.pop())
+                player.purchases_used += 1
+                msg = f"Compraste del pozo (+{extra} {'carta' if extra == 1 else 'cartas'})"
+                print(f"DEBUG: {player.name} compró — out_of_turn={out_of_turn} | +{extra} cartas")
+                return {"ok": True, "message": msg}
 
     def calculate_scores(self):
         resultados = []

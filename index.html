@@ -8,7 +8,6 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { background: #1a5c2a; font-family: 'Segoe UI', Arial, sans-serif; color: white; min-height: 100vh; overflow-x: hidden; }
 
-  /* ── INICIO ── */
   #pantalla-inicio { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
   .logo-titulo { font-size: 52px; font-weight: 900; color: #f5c842; letter-spacing: 6px; text-transform: uppercase; text-shadow: 3px 3px 0px rgba(0,0,0,0.4); margin-bottom: 6px; }
   .logo-subtitulo { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 5px; text-transform: uppercase; margin-bottom: 40px; }
@@ -29,20 +28,17 @@
   .btn-gris { background: rgba(255,255,255,0.15); color: white; }
   .btn-naranja { background: #e67e22; color: white; }
 
-  /* ── ESPERA ── */
   #pantalla-espera { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
   .codigo-sala { font-size: 64px; font-weight: 900; color: #f5c842; background: rgba(255,255,255,0.08); border-radius: 16px; padding: 20px 40px; margin: 16px 0; letter-spacing: 8px; }
   .lista-jugadores { margin-top: 20px; }
   .jugador-item { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 10px 20px; margin: 6px 0; font-size: 16px; display: flex; align-items: center; gap: 10px; }
-  .jugador-item.conectado { border-left: 3px solid #2e9e4f; }
   .jugador-item.esperando { border-left: 3px solid rgba(255,255,255,0.2); opacity: 0.6; }
 
-  /* ── JUEGO ── */
   #pantalla-juego { display: none; flex-direction: column; min-height: 100vh; padding: 12px; }
   .info-top { text-align: center; margin-bottom: 8px; }
   .ronda-titulo { font-size: 20px; font-weight: 800; color: white; margin-bottom: 6px; }
   .jugadores-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px; }
-  .jugador-card { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 6px 12px; font-size: 12px; border: 2px solid transparent; transition: all 0.2s; }
+  .jugador-card { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 6px 12px; font-size: 12px; border: 2px solid transparent; }
   .jugador-card.activo { border-color: #f5c842; background: rgba(245,200,66,0.15); }
   .jugador-card .nombre { font-size: 13px; font-weight: 600; }
   .jugador-card .detalles { color: rgba(255,255,255,0.6); font-size: 11px; }
@@ -53,30 +49,26 @@
   .badge-objetivo-ok { background: #2e9e4f; color: white; }
   .badge-objetivo-no { background: #e67e22; color: white; }
   .badge-grupos { background: #2563eb; color: white; }
-  .timer { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; transition: background 0.3s; }
+  .timer { width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; }
   .timer-draw { background: #2563eb; }
   .timer-play-ok { background: #2e9e4f; }
   .timer-play-warn { background: #e67e22; }
   .timer-play-danger { background: #dc2626; }
 
-  /* ── MESA ── */
   .mesa { position: relative; min-height: 140px; background: rgba(0,0,0,0.15); border-radius: 12px; margin-bottom: 8px; overflow: hidden; padding: 10px; }
-  .mesa-fondo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 90px; font-weight: 900; color: rgba(255,255,255,0.06); letter-spacing: 4px; white-space: nowrap; pointer-events: none; user-select: none; }
+  .mesa-fondo { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); pointer-events: none; user-select: none; }
   .mesa-fondo img { max-width: 90%; max-height: 120px; opacity: 0.12; object-fit: contain; }
   .juegos-container { position: relative; display: flex; flex-wrap: wrap; gap: 10px; z-index: 1; }
   .juego-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; padding: 8px; }
   .juego-titulo { font-size: 11px; color: #f5c842; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
   .btn-agregar { background: none; border: none; color: #f5c842; cursor: pointer; font-size: 18px; padding: 0; line-height: 1; }
-  .btn-agregar:hover { color: white; }
   .cartas-juego { display: flex; flex-wrap: wrap; gap: 4px; }
 
-  /* ── CARTA MINI (mesa) ── */
   .carta-mini { width: 42px; height: 60px; background: white; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border: 2px solid transparent; }
   .carta-mini.joker { border-color: #9333ea; }
   .carta-mini .rank-mini { font-size: 9px; font-weight: 800; position: absolute; top: 3px; left: 4px; }
   .carta-mini svg { width: 22px; height: 22px; }
 
-  /* ── ZONA INFERIOR ── */
   .zona-inferior { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; flex-wrap: wrap; }
   .pozo-container { display: flex; flex-direction: column; align-items: center; gap: 4px; }
   .pozo-label { font-size: 11px; color: rgba(255,255,255,0.6); }
@@ -84,15 +76,13 @@
   .btn-accion { padding: 10px 16px; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; transition: transform 0.1s, opacity 0.1s; }
   .btn-accion:hover { opacity: 0.9; transform: translateY(-1px); }
   .btn-accion:active { transform: translateY(0); }
-  .btn-accion:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
 
-  /* ── CARTA GRANDE (mano/pozo) ── */
   .carta { width: 70px; height: 100px; background: white; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; cursor: grab; border: 3px solid transparent; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; user-select: none; flex-shrink: 0; }
   .carta:hover { transform: translateY(-4px); }
   .carta.seleccionada { border-color: #3b82f6; background: #fef9c3; transform: translateY(-8px); }
   .carta.preparada { border-color: #2e9e4f; background: #f0fdf4; opacity: 0.7; }
   .carta.joker { border-color: #9333ea; }
-  .carta.dragging { opacity: 0.4; transform: translateY(-8px); cursor: grabbing; }
+  .carta.dragging { opacity: 0.4; cursor: grabbing; }
   .carta.drag-over { border-color: #f5c842; background: #fef9c3; transform: translateY(-12px); box-shadow: 0 8px 20px rgba(245,200,66,0.4); }
   .carta .rank { font-size: 15px; font-weight: 800; position: absolute; top: 5px; left: 6px; }
   .carta svg { width: 40px; height: 40px; }
@@ -100,10 +90,8 @@
   .carta .check-preparada { position: absolute; bottom: 4px; right: 4px; color: #2e9e4f; font-size: 14px; }
   .carta-vacia { width: 70px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-size: 24px; }
 
-  /* ── MANO ── */
   .mano-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 8px 0; min-height: 120px; }
 
-  /* ── MODALES ── */
   .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; }
   .modal-overlay.activo { display: flex; }
   .modal { background: #1e4d2b; border: 2px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 28px; max-width: 420px; width: 90%; text-align: center; }
@@ -112,11 +100,8 @@
   .modal-btns { display: flex; gap: 12px; justify-content: center; }
   .modal-btns .btn { width: auto; padding: 10px 28px; font-size: 15px; }
   .opciones-joker { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 16px 0; }
-
-  /* Timer compra */
   .timer-compra { width: 50px; height: 50px; border-radius: 50%; background: #e67e22; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 900; margin: 0 auto 12px; }
 
-  /* ── TOAST ── */
   #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: rgba(0,0,0,0.85); color: white; padding: 12px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; z-index: 2000; transition: transform 0.3s; max-width: 90%; text-align: center; }
   #toast.visible { transform: translateX(-50%) translateY(0); }
 
@@ -136,7 +121,6 @@
 </head>
 <body>
 
-<!-- INICIO -->
 <div id="pantalla-inicio">
   <div class="logo-titulo">Telefunken</div>
   <div class="logo-subtitulo">el juego de cartas</div>
@@ -157,7 +141,6 @@
   </div>
 </div>
 
-<!-- ESPERA -->
 <div id="pantalla-espera" style="display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px;text-align:center;">
   <h2 style="font-size:22px;font-weight:700;margin-bottom:8px;">⏳ Esperando jugadores...</h2>
   <p style="color:rgba(255,255,255,0.6);margin-bottom:8px;">Compartí este código con tus amigos:</p>
@@ -166,7 +149,6 @@
   <div class="lista-jugadores" id="lista-jugadores-espera"></div>
 </div>
 
-<!-- JUEGO -->
 <div id="pantalla-juego" style="display:none;">
   <div class="info-top">
     <div class="ronda-titulo" id="ronda-titulo">RONDA 1/7</div>
@@ -180,7 +162,7 @@
   <hr class="separador">
   <div class="mesa">
     <div class="mesa-fondo">
-      <img src="/assets/telefunken_graffiti.png.png" alt="" onerror="this.parentElement.innerHTML='TELEFUNKEN'">
+      <img src="/assets/telefunken_graffiti.png.png" alt="" onerror="this.parentElement.innerHTML='<span style=\'font-size:80px;font-weight:900;color:rgba(255,255,255,0.06);letter-spacing:4px;\'>TELEFUNKEN</span>'">
     </div>
     <div class="juegos-container" id="juegos-container"></div>
   </div>
@@ -237,8 +219,7 @@
 <!-- MODAL COMPRA FUERA DE TURNO -->
 <div class="modal-overlay" id="modal-compra">
   <div class="modal">
-    <h3 id="modal-compra-titulo">🃏 Jugador</h3>
-    <p>¿Querés esta carta del pozo?</p>
+    <h3 id="modal-compra-titulo">🃏 ¿Querés esta carta?</h3>
     <div class="timer-compra" id="timer-compra">10</div>
     <div id="carta-pozo-preview" style="display:flex;justify-content:center;margin-bottom:16px;"></div>
     <div class="modal-btns">
@@ -259,23 +240,40 @@ const state = {
   selectedIndices: [], pendingMelds: [],
   timerInterval: null, timerSeconds: 0,
   pozoBlockeado: false, ws: null, lastAction: null,
-  dragSrcIndex: null,
-  compraTimer: null, compraCallback: null,
+  dragSrcIndex: null, compraTimer: null,
+  // ✅ Orden local de cartas — persiste entre actualizaciones del servidor
+  localHandOrder: null,
 };
+
+// ✅ PING anti-sleep — cada 10 minutos para mantener Render despierto
+setInterval(() => {
+  fetch(`${SERVER_URL}/`).catch(() => {});
+}, 10 * 60 * 1000);
 
 // ── SVGs PALOS ──
 function suitSVG(suit) {
+  const s = normalizeSuit(suit);
   const svgs = {
     Spades: `<svg viewBox="0 0 100 100"><path d="M50 5 C50 5 5 45 5 65 C5 80 20 85 35 78 C30 88 25 95 15 98 L85 98 C75 95 70 88 65 78 C80 85 95 80 95 65 C95 45 50 5 50 5Z" fill="#1a1a1a"/></svg>`,
     Clubs: `<svg viewBox="0 0 100 100"><circle cx="50" cy="35" r="22" fill="#1a1a1a"/><circle cx="25" cy="60" r="22" fill="#1a1a1a"/><circle cx="75" cy="60" r="22" fill="#1a1a1a"/><rect x="40" y="55" width="20" height="35" fill="#1a1a1a"/><rect x="30" y="85" width="40" height="10" fill="#1a1a1a"/></svg>`,
     Hearts: `<svg viewBox="0 0 100 100"><path d="M50 85 Q5 55 5 30 Q5 5 30 5 Q42 5 50 18 Q58 5 70 5 Q95 5 95 30 Q95 55 50 85 Z" fill="#dc2626"/></svg>`,
     Diamonds: `<svg viewBox="0 0 100 100"><polygon points="50,5 95,50 50,95 5,50" fill="#dc2626"/></svg>`,
   };
-  return svgs[suit] || `<svg viewBox="0 0 100 100"><text x="50" y="70" text-anchor="middle" font-size="60" fill="#666">?</text></svg>`;
+  return svgs[s] || `<svg viewBox="0 0 100 100"><text x="50" y="70" text-anchor="middle" font-size="60" fill="#666">?</text></svg>`;
+}
+
+function normalizeSuit(suit) {
+  if (!suit) return 'Spades';
+  const s = typeof suit === 'string' ? suit : (suit.name || String(suit));
+  const clean = s.includes('.') ? s.split('.').pop() : s;
+  const cap = clean.charAt(0).toUpperCase() + clean.slice(1).toLowerCase();
+  const map = {Hearts:'Hearts',Diamonds:'Diamonds',Spades:'Spades',Clubs:'Clubs'};
+  return map[cap] || map[clean] || 'Spades';
 }
 
 function cardColor(suit) {
-  return (suit === 'Hearts' || suit === 'Diamonds') ? 'rojo' : 'negro';
+  const s = normalizeSuit(suit);
+  return (s === 'Hearts' || s === 'Diamonds') ? 'rojo' : 'negro';
 }
 
 // ── INICIO ──
@@ -298,13 +296,16 @@ async function crearSala() {
     const v = document.getElementById(`jugador-nombre-${i}`).value.trim();
     nombres.push(v || `Jugador ${i+1}`);
   }
-  mostrarToast('Conectando al servidor...');
+  mostrarToast('Conectando al servidor... (puede tardar hasta 1 minuto si estaba inactivo)');
   try {
-    const res = await fetch(`${SERVER_URL}/sala/crear`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({nombres}) });
+    const res = await fetch(`${SERVER_URL}/sala/crear`, {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nombres})
+    });
     const data = await res.json();
     if (data.ok) { state.codigo = data.codigo; state.myIndex = 0; mostrarEspera(data.codigo, data.jugadores); }
     else mostrarToast(data.message || 'Error');
-  } catch(e) { mostrarToast('Error de conexión. El servidor puede estar durmiendo, intentá en 30 segundos.'); }
+  } catch(e) { mostrarToast('Error de conexión. El servidor está despertando, intentá en 30 segundos.'); }
 }
 
 async function unirseSala() {
@@ -326,7 +327,8 @@ function mostrarEspera(codigo, jugadores) {
   document.getElementById('pantalla-inicio').style.display = 'none';
   document.getElementById('pantalla-espera').style.display = 'flex';
   document.getElementById('codigo-display').textContent = codigo;
-  document.getElementById('lista-jugadores-espera').innerHTML = jugadores.map(j => `<div class="jugador-item esperando">👤 ${j.name}</div>`).join('');
+  document.getElementById('lista-jugadores-espera').innerHTML =
+    jugadores.map(j => `<div class="jugador-item esperando">👤 ${j.name}</div>`).join('');
   conectarWS();
 }
 
@@ -344,43 +346,85 @@ function enviarAccion(accion) {
   else mostrarToast('Sin conexión');
 }
 
+// ✅ Aplicar orden local a la mano del servidor
+function aplicarOrdenLocal(serverHand) {
+  if (!state.localHandOrder || state.localHandOrder.length === 0) {
+    state.localHandOrder = serverHand.map((_, i) => i);
+    return serverHand;
+  }
+
+  const prevLen = state.localHandOrder.length;
+  const newLen = serverHand.length;
+
+  if (newLen === prevLen) {
+    // Mismo tamaño — aplicar orden guardado
+    return state.localHandOrder.map(i => serverHand[i] || serverHand[0]);
+  } else if (newLen > prevLen) {
+    // Ganó cartas — agregar al final
+    const diff = newLen - prevLen;
+    const newIndices = Array.from({length: diff}, (_, i) => prevLen + i);
+    state.localHandOrder = [...state.localHandOrder, ...newIndices];
+    return state.localHandOrder.map(i => serverHand[i] || serverHand[0]);
+  } else {
+    // Perdió cartas — reconstruir orden sin los faltantes
+    const ratio = newLen / prevLen;
+    // Crear nuevo orden proporcional
+    state.localHandOrder = Array.from({length: newLen}, (_, i) => i);
+    return serverHand;
+  }
+}
+
 function procesarMensaje(data) {
   switch(data.type) {
     case 'game_state':
+      // ✅ Aplicar orden local antes de guardar el estado
+      if (data.my_hand) {
+        data.my_hand = aplicarOrdenLocal(data.my_hand);
+      }
       state.gameState = data;
       document.getElementById('pantalla-espera').style.display = 'none';
       const pj = document.getElementById('pantalla-juego');
       pj.style.display = 'flex'; pj.style.flexDirection = 'column';
       renderJuego();
       manejarTimer(data);
-      // ✅ Compra fuera de turno — si acaba de descartar y hay jugadores a preguntar
-      if (data._compra_pendiente) {
-        iniciarFlujoCompra(data._compra_pendiente);
-      }
       break;
-    case 'game_start': mostrarToast(data.message || '¡Arranca!'); break;
-    case 'player_joined': mostrarToast(data.message || ''); break;
+
+    case 'game_start':
+      mostrarToast(data.message || '¡Arranca!');
+      break;
+
+    case 'player_joined':
+      mostrarToast(data.message || '');
+      break;
+
     case 'round_over':
       detenerTimer();
+      // ✅ Reset orden local al fin de ronda
+      state.localHandOrder = null;
       const scores = (data.scores || []).map(s => `${s.name}: ${s.score} pts`).join('\n');
       document.getElementById('modal-ronda-titulo').textContent = `🏁 FIN DE RONDA — Ganó ${data.winner}`;
       document.getElementById('modal-ronda-content').textContent = scores;
       document.getElementById('modal-ronda').classList.add('activo');
       break;
+
     case 'new_round':
-      state.selectedIndices = []; state.pendingMelds = []; state.pozoBlockeado = false;
+      state.selectedIndices = []; state.pendingMelds = [];
+      state.pozoBlockeado = false; state.localHandOrder = null;
       document.getElementById('modal-ronda').classList.remove('activo');
       mostrarToast(data.message || 'Nueva ronda');
       break;
+
     case 'info': mostrarToast(data.message || ''); break;
     case 'error': mostrarToast(data.message || 'Error'); break;
+
     case 'ASK_JOKER_VALUE': mostrarModalJoker(data); break;
+
     case 'ASK_STEAL':
       mostrarModalSiNo('SUSTITUCIÓN', data.message || '¿Querés robar el comodín?',
         () => enviarAccion({...state.lastAction, steal_decision: 's'}),
         () => enviarAccion({...state.lastAction, steal_decision: 'n'}));
       break;
-    // ✅ Compra fuera de turno — el servidor manda este evento
+
     case 'ASK_OUT_OF_TURN':
       preguntarCompraFueraTurno(data);
       break;
@@ -389,35 +433,33 @@ function procesarMensaje(data) {
 
 // ── COMPRA FUERA DE TURNO ──
 function preguntarCompraFueraTurno(data) {
-  const playerName = data.player_name || 'Jugador';
   const buyerIndex = data.buyer_index;
-  // Solo mostramos el modal al jugador que debe decidir
   if (buyerIndex !== state.myIndex) return;
 
   const gs = state.gameState;
   const discardTop = gs ? gs.discard_top : null;
 
-  // Mostrar carta del pozo
   const preview = document.getElementById('carta-pozo-preview');
   if (discardTop && !discardTop.is_joker) {
-    preview.innerHTML = `<div class="carta" style="cursor:default;"><span class="rank ${cardColor(discardTop.suit)}">${discardTop.rank}</span>${suitSVG(discardTop.suit)}</div>`;
+    preview.innerHTML = `<div class="carta" style="cursor:default;pointer-events:none;"><span class="rank ${cardColor(discardTop.suit)}">${discardTop.rank}</span>${suitSVG(discardTop.suit)}</div>`;
   } else {
     preview.innerHTML = '';
   }
 
-  document.getElementById('modal-compra-titulo').textContent = `🃏 ${playerName}`;
+  document.getElementById('modal-compra-titulo').textContent = `🃏 ${data.player_name || 'Jugador'}, ¿querés esta carta?`;
   document.getElementById('modal-compra').classList.add('activo');
 
   let segundos = 10;
-  document.getElementById('timer-compra').textContent = segundos;
-  document.getElementById('timer-compra').style.background = '#e67e22';
+  const timerEl = document.getElementById('timer-compra');
+  timerEl.textContent = segundos;
+  timerEl.style.background = '#e67e22';
 
   if (state.compraTimer) clearInterval(state.compraTimer);
 
   state.compraTimer = setInterval(() => {
     segundos--;
-    document.getElementById('timer-compra').textContent = segundos;
-    if (segundos <= 3) document.getElementById('timer-compra').style.background = '#dc2626';
+    timerEl.textContent = segundos;
+    if (segundos <= 3) timerEl.style.background = '#dc2626';
     if (segundos <= 0) {
       clearInterval(state.compraTimer);
       cerrarModalCompra();
@@ -430,7 +472,6 @@ function preguntarCompraFueraTurno(data) {
     cerrarModalCompra();
     enviarAccion({type: 'OUT_OF_TURN_RESPONSE', buyer_index: buyerIndex, decision: 'si'});
   };
-
   document.getElementById('compra-no-btn').onclick = () => {
     clearInterval(state.compraTimer);
     cerrarModalCompra();
@@ -466,7 +507,10 @@ function iniciarTimer(segundos, fase) {
     if (state.timerSeconds <= 0) {
       detenerTimer();
       if (fase === 'DRAW') enviarAccion({type: 'DRAW', source: 'deck'});
-      else { const gs = state.gameState; if (gs && gs.my_hand && gs.my_hand.length > 0) enviarAccion({type: 'DISCARD', card_index: 0}); }
+      else {
+        const gs = state.gameState;
+        if (gs && gs.my_hand && gs.my_hand.length > 0) enviarAccion({type: 'DISCARD', card_index: 0});
+      }
     }
   }, 1000);
 }
@@ -481,7 +525,9 @@ function actualizarTimerUI(s, fase) {
   const el = document.getElementById('timer');
   el.textContent = s; el.className = 'timer';
   if (fase === 'DRAW') el.classList.add(s > 5 ? 'timer-draw' : 'timer-play-danger');
-  else { if (s <= 5) el.classList.add('timer-play-danger'); else if (s <= 15) el.classList.add('timer-play-warn'); else el.classList.add('timer-play-ok'); }
+  else if (s <= 5) el.classList.add('timer-play-danger');
+  else if (s <= 15) el.classList.add('timer-play-warn');
+  else el.classList.add('timer-play-ok');
 }
 
 // ── RENDER ──
@@ -493,7 +539,10 @@ function renderJuego() {
 
   document.getElementById('jugadores-row').innerHTML = gs.players.map(p => {
     const activo = p.index === gs.current_player_index, yo = p.index === state.myIndex;
-    return `<div class="jugador-card ${activo?'activo':''} ${yo?'yo':''}"><div class="nombre">${yo?'👤 ':''}${p.name}${activo?' ⭐':''}</div><div class="detalles">🃏 ${p.hand_count} | 🛒 ${p.purchases_used}/7</div></div>`;
+    return `<div class="jugador-card ${activo?'activo':''} ${yo?'yo':''}">
+      <div class="nombre">${yo?'👤 ':''}${p.name}${activo?' ⭐':''}</div>
+      <div class="detalles">🃏 ${p.hand_count} | 🛒 ${p.purchases_used}/7</div>
+    </div>`;
   }).join('');
 
   const esMiTurno = gs.current_player_index === state.myIndex;
@@ -517,7 +566,8 @@ function renderMesa() {
   cont.innerHTML = '';
   (gs.melds || []).forEach((meld, i) => {
     const div = document.createElement('div'); div.className = 'juego-card';
-    div.innerHTML = `<div class="juego-titulo">Juego ${i+1}<button class="btn-agregar" onclick="agregarAJuego(${i})">＋</button></div><div class="cartas-juego">${meld.cards.map(c => renderCartaMini(c)).join('')}</div>`;
+    div.innerHTML = `<div class="juego-titulo">Juego ${i+1}<button class="btn-agregar" onclick="agregarAJuego(${i})">＋</button></div>
+      <div class="cartas-juego">${meld.cards.map(c => renderCartaMini(c)).join('')}</div>`;
     cont.appendChild(div);
   });
 }
@@ -536,7 +586,7 @@ function renderPozo() {
   } else { el.className = 'carta-vacia'; el.innerHTML = '🂠'; }
 }
 
-// ── MANO CON DRAG & DROP ──
+// ── MANO CON DRAG & DROP + ORDEN PERSISTENTE ──
 function renderMano() {
   const gs = state.gameState, cont = document.getElementById('mano-container');
   cont.innerHTML = '';
@@ -562,58 +612,51 @@ function renderMano() {
     div.className = clases;
     div.innerHTML = contenido;
     div.dataset.index = i;
-
-    // ✅ DRAG & DROP
     div.draggable = true;
     div.addEventListener('dragstart', onDragStart);
     div.addEventListener('dragover', onDragOver);
     div.addEventListener('dragleave', onDragLeave);
     div.addEventListener('drop', onDrop);
     div.addEventListener('dragend', onDragEnd);
-
-    // Click para seleccionar
-    div.addEventListener('click', (e) => {
+    div.addEventListener('click', () => {
       if (prep) return;
-      const idx = parseInt(div.dataset.index);
-      const pos = state.selectedIndices.indexOf(idx);
-      if (pos >= 0) state.selectedIndices.splice(pos, 1);
-      else state.selectedIndices.push(idx);
+      const idx = state.selectedIndices.indexOf(i);
+      if (idx >= 0) state.selectedIndices.splice(idx, 1);
+      else state.selectedIndices.push(i);
       renderMano(); renderBadgeObjetivo();
     });
-
     cont.appendChild(div);
   });
 }
 
-// ── DRAG & DROP HANDLERS ──
+// ── DRAG & DROP ──
 function onDragStart(e) {
   state.dragSrcIndex = parseInt(e.currentTarget.dataset.index);
   e.currentTarget.classList.add('dragging');
   e.dataTransfer.effectAllowed = 'move';
-  e.dataTransfer.setData('text/plain', state.dragSrcIndex);
 }
-
 function onDragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = 'move';
+  e.preventDefault(); e.dataTransfer.dropEffect = 'move';
   e.currentTarget.classList.add('drag-over');
 }
-
-function onDragLeave(e) {
-  e.currentTarget.classList.remove('drag-over');
-}
-
+function onDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
 function onDrop(e) {
   e.preventDefault();
   e.currentTarget.classList.remove('drag-over');
   const dstIndex = parseInt(e.currentTarget.dataset.index);
   const srcIndex = state.dragSrcIndex;
-  if (srcIndex === null || srcIndex === dstIndex) return;
+  if (srcIndex === null || srcIndex === undefined || srcIndex === dstIndex) return;
 
-  // Reordenar la mano localmente
+  // ✅ Reordenar la mano local Y actualizar el orden guardado
   const hand = state.gameState.my_hand;
   const card = hand.splice(srcIndex, 1)[0];
   hand.splice(dstIndex, 0, card);
+
+  // Actualizar localHandOrder
+  if (state.localHandOrder) {
+    const orderCard = state.localHandOrder.splice(srcIndex, 1)[0];
+    state.localHandOrder.splice(dstIndex, 0, orderCard);
+  }
 
   // Remap índices seleccionados y pendientes
   function remap(idx) {
@@ -627,7 +670,6 @@ function onDrop(e) {
   state.dragSrcIndex = null;
   renderMano();
 }
-
 function onDragEnd(e) {
   e.currentTarget.classList.remove('dragging');
   document.querySelectorAll('.carta.drag-over').forEach(el => el.classList.remove('drag-over'));
@@ -719,23 +761,8 @@ function mostrarModalJoker(data) {
   cont.innerHTML = '';
   (data.options || []).forEach(opt => {
     const rank = typeof opt === 'object' ? opt.rank : opt;
-    // ✅ Fix: resolver el suit correctamente
-    let suitName = 'Spades';
-    if (typeof opt === 'object' && opt.suit) {
-      const s = opt.suit;
-      if (typeof s === 'string') {
-        // puede venir como "Suit.Hearts" o "Hearts"
-        suitName = s.includes('.') ? s.split('.').pop() : s;
-        // Capitalizar
-        suitName = suitName.charAt(0).toUpperCase() + suitName.slice(1).toLowerCase();
-        // Mapear variantes
-        const mapa = {Hearts:'Hearts', Diamonds:'Diamonds', Spades:'Spades', Clubs:'Clubs', hearts:'Hearts', diamonds:'Diamonds', spades:'Spades', clubs:'Clubs'};
-        suitName = mapa[suitName] || 'Spades';
-      } else if (s && s.name) {
-        suitName = s.name;
-      }
-    }
-
+    const suitRaw = typeof opt === 'object' ? opt.suit : null;
+    const suitName = normalizeSuit(suitRaw);
     const carta = document.createElement('div');
     carta.className = 'carta'; carta.style.cursor = 'pointer';
     carta.innerHTML = `<span class="rank ${cardColor(suitName)}">${rank}</span>${suitSVG(suitName)}`;
@@ -757,7 +784,7 @@ function mostrarToast(msg) {
   const el = document.getElementById('toast');
   el.textContent = msg; el.classList.add('visible');
   if (toastTimeout) clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => el.classList.remove('visible'), 3000);
+  toastTimeout = setTimeout(() => el.classList.remove('visible'), 3500);
 }
 </script>
 </body>
