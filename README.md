@@ -1,6 +1,6 @@
-🃏  #Juego de Cartas: Telefunken Pro (Multijugador Online)
+🃏  Juego de Cartas: Telefunken Pro (Multijugador Online)
 
-##Descripción general
+Descripción general
 Este proyecto es una versión digital y multijugador del clásico juego de cartas Telefunken (estilo canasta). Permite a los usuarios jugar partidas en tiempo real con amigos, respetando las reglas tradicionales y exclusivas de esta modalidad.
 
 **Objetivo**
@@ -15,7 +15,7 @@ Para que el juego funcione correctamente, se utilizó Python para programar toda
 
 **Sincronización:** Uso de WebSockets para que todos los jugadores vean los movimientos al mismo tiempo sin retrasos.
 
-##Funcionalidades del Juego
+**Funcionalidades del Juego**
 **Menú de Instrucciones:** Acceso directo desde el menú principal presionando el icono ? para conocer las reglas.
 
 **Sistema de Compras:** Opción de comprar cartas fuera de turno con un temporizador automático de 10 segundos.
@@ -24,10 +24,10 @@ Para que el juego funcione correctamente, se utilizó Python para programar toda
 
 **Multiplataforma:** Gracias al despliegue en la nube (Render), se puede jugar desde la computadora, tablet o móvil.
 
-##Conclusión
+**Conclusión**
 El desarrollo de este juego demuestra que es posible llevar reglas complejas a un entorno web funcional. Las pruebas reales con jugadores confirmaron que el sistema de sincronización en tiempo real es robusto y que la lógica de las cartas responde exactamente como en el juego físico, logrando una experiencia fluida y entretenida.
 
-##Cómo jugar
+**Cómo jugar**
 **Acceso:** Ingresa al enlace del juego (si el desarrollador te lo proporciona) o ejecuta el servidor localmente.
 
 **Menú Principal:** Revisa las reglas en el botón de ayuda **'?'**.
@@ -36,7 +36,7 @@ El desarrollo de este juego demuestra que es posible llevar reglas complejas a u
 
 **Interacción:** Arrastra tus cartas para formar juegos y mantente atento al temporizador cuando alguien quiera comprar una carta.
 
-##Tecnologías utilizadas
+**Tecnologías utilizadas**
 **Python:** El motor principal del juego.
 
 **FastAPI:** Para el servidor y la comunicación rápida.
