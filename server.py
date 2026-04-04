@@ -135,7 +135,6 @@ async def preguntar_siguiente_jugador(codigo: str):
     pendientes = sala.get("compra_pendiente", [])
 
     if not pendientes or not sala["game"].discard_pile:
-        # Nadie quiso — mandamos estado final para que arranque el turno
         sala["compra_pendiente"] = []
         await broadcast_state(codigo)
         return
@@ -208,17 +207,20 @@ async def handle_action(codigo: str, player_index: int, action: dict):
         buyer_index = action.get("buyer_index")
         pendientes = sala.get("compra_pendiente", [])
 
-        # Verificamos que sea el jugador correcto respondiendo
         if not pendientes or pendientes[0] != buyer_index:
             return
 
         if decision == "si":
-            # Siempre fuera de turno → +1 carta
-            res = game.apply_action({
-                "type": "OUT_OF_TURN_PURCHASE",
-                "buyer_index": buyer_index,
-                "es_turno_propio": False
-            })
+            # Jugador en turno → DRAW del descarte (+2 cartas)
+            # Jugador fuera de turno → OUT_OF_TURN_PURCHASE (+1 carta)
+            es_turno_actual = buyer_index == game.current_player_index
+            if es_turno_actual:
+                res = game.apply_action({"type": "DRAW", "source": "discard"})
+            else:
+                res = game.apply_action({
+                    "type": "OUT_OF_TURN_PURCHASE",
+                    "buyer_index": buyer_index
+                })
 
             if res["ok"]:
                 sala["compra_pendiente"] = []
@@ -233,11 +235,9 @@ async def handle_action(codigo: str, player_index: int, action: dict):
                     "type": "error",
                     "message": res.get("message", "No se pudo comprar")
                 })
-                # Pasar al siguiente
                 sala["compra_pendiente"] = pendientes[1:]
                 await preguntar_siguiente_jugador(codigo)
         else:
-            # NO → pasar al siguiente
             sala["compra_pendiente"] = pendientes[1:]
             await preguntar_siguiente_jugador(codigo)
         return
@@ -270,20 +270,17 @@ async def handle_action(codigo: str, player_index: int, action: dict):
                 "message": res["message"],
             })
 
-        # ✅ Después de un descarte exitoso → preguntar compra fuera de turno
+        # ✅ Después de un descarte → preguntar SOLO al jugador en turno y los demás
+        # El jugador que descartó NO se pregunta — ya terminó su turno
         if action_type == "DISCARD" and not game.winner:
             n = len(game.players)
             if n >= 2 and game.discard_pile:
-                # Guardamos quién descartó para darle +2 si compra
-                quien_descarto = (game.current_player_index - 1) % n
-                sala["quien_descarto"] = quien_descarto
-
-                # Solo preguntar a los demás jugadores (no al que acaba de descartar)
+                # current_player_index ya avanzó al siguiente jugador
+                # Preguntamos en orden: primero el del turno, luego los demás
                 jugadores_a_preguntar = []
                 for offset in range(n - 1):
                     idx = (game.current_player_index + offset) % n
-                    if idx != quien_descarto:
-                        jugadores_a_preguntar.append(idx)
+                    jugadores_a_preguntar.append(idx)
 
                 sala["compra_pendiente"] = jugadores_a_preguntar
                 sala["compra_bloqueada"] = False
