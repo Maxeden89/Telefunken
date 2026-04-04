@@ -213,15 +213,14 @@ async def handle_action(codigo: str, player_index: int, action: dict):
             return
 
         if decision == "si":
-            # Es el jugador en turno → robo normal del pozo (+2)
-            es_turno_actual = buyer_index == game.current_player_index
-            if es_turno_actual:
-                res = game.apply_action({"type": "DRAW", "source": "discard"})
-            else:
-                res = game.apply_action({
-                    "type": "OUT_OF_TURN_PURCHASE",
-                    "buyer_index": buyer_index
-                })
+            # El jugador que descartó recibe +2, los demás +1
+            quien_descarto = sala.get("quien_descarto", -1)
+            es_quien_descarto = (buyer_index == quien_descarto)
+            res = game.apply_action({
+                "type": "OUT_OF_TURN_PURCHASE",
+                "buyer_index": buyer_index,
+                "es_turno_propio": es_quien_descarto
+            })
 
             if res["ok"]:
                 sala["compra_pendiente"] = []
@@ -277,6 +276,10 @@ async def handle_action(codigo: str, player_index: int, action: dict):
         if action_type == "DISCARD" and not game.winner:
             n = len(game.players)
             if n >= 2 and game.discard_pile:
+                # Guardamos quién descartó para darle +2 si compra
+                quien_descarto = (game.current_player_index - 1) % n
+                sala["quien_descarto"] = quien_descarto
+
                 jugadores_a_preguntar = []
                 for offset in range(n - 1):
                     idx = (game.current_player_index + offset) % n

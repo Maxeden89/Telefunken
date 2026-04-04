@@ -86,11 +86,16 @@ class Game:
             return {"ok": False, "message": "Falta el índice del comprador"}
 
         buyer = self.players[buyer_index]
-        print(f"DEBUG: {buyer.name} intenta comprar fuera de turno")
+        # Si es quien descartó (su propio turno terminó) recibe +2, sino +1
+        es_turno_propio = action.get("es_turno_propio", False)
+        out_of_turn = not es_turno_propio
 
-        res = self._handle_purchase(buyer, out_of_turn=True)
+        print(f"DEBUG: {buyer.name} compra del pozo | es_turno_propio={es_turno_propio}")
+
+        res = self._handle_purchase(buyer, out_of_turn=out_of_turn)
         if res["ok"]:
-            print(f"DEBUG: {buyer.name} compró fuera de turno (+1 carta)")
+            extra = 1 if out_of_turn else 2
+            print(f"DEBUG: {buyer.name} compró (+{extra} carta/s)")
         return res
 
     def _action_lay_all_objective(self, player, action):

@@ -337,6 +337,7 @@
       <button class="btn-accion btn-gris" onclick="cancelarTodo()">↺ Cancelar</button>
       <button class="btn-accion btn-naranja" onclick="bajarJuego()">⬇ Bajar</button>
       <button class="btn-accion btn-rojo" onclick="descartar()">🗑 Descartar</button>
+      <button class="btn-accion" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);font-size:11px;" onclick="recuperarTurno()" title="Si el juego se cuelga, tocá aquí">🔄 Recuperar</button>
     </div>
   </div>
   <div class="mano-container" id="mano-container"></div>
@@ -899,6 +900,23 @@ function preguntarCompraFueraTurno(data) {
 }
 
 function cerrarModalCompra() { document.getElementById('modal-compra').classList.remove('activo'); }
+
+// ── RECUPERACIÓN DE TURNO BLOQUEADO ──
+function recuperarTurno() {
+  const gs = state.gameState;
+  if (!gs) { mostrarToast('Sin estado de juego'); return; }
+  if (gs.current_player_index !== state.myIndex) { mostrarToast('No es tu turno'); return; }
+  detenerTimer();
+  state.selectedIndices = [];
+  state.pendingMelds = [];
+  // Limpiar timers de compra
+  if (state.compraTimer) { clearInterval(state.compraTimer); state.compraTimer = null; }
+  if (state._drawRetry) { clearTimeout(state._drawRetry); state._drawRetry = null; }
+  cerrarModalCompra();
+  // Reiniciar el timer del turno actual
+  manejarTimer(gs);
+  mostrarToast('Turno recuperado ✅');
+}
 
 // ── TIMER ──
 function manejarTimer(gs) {
