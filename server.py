@@ -213,13 +213,11 @@ async def handle_action(codigo: str, player_index: int, action: dict):
             return
 
         if decision == "si":
-            # El jugador que descartó recibe +2, los demás +1
-            quien_descarto = sala.get("quien_descarto", -1)
-            es_quien_descarto = (buyer_index == quien_descarto)
+            # Siempre fuera de turno → +1 carta
             res = game.apply_action({
                 "type": "OUT_OF_TURN_PURCHASE",
                 "buyer_index": buyer_index,
-                "es_turno_propio": es_quien_descarto
+                "es_turno_propio": False
             })
 
             if res["ok"]:
@@ -280,10 +278,12 @@ async def handle_action(codigo: str, player_index: int, action: dict):
                 quien_descarto = (game.current_player_index - 1) % n
                 sala["quien_descarto"] = quien_descarto
 
+                # Solo preguntar a los demás jugadores (no al que acaba de descartar)
                 jugadores_a_preguntar = []
                 for offset in range(n - 1):
                     idx = (game.current_player_index + offset) % n
-                    jugadores_a_preguntar.append(idx)
+                    if idx != quien_descarto:
+                        jugadores_a_preguntar.append(idx)
 
                 sala["compra_pendiente"] = jugadores_a_preguntar
                 sala["compra_bloqueada"] = False
