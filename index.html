@@ -801,28 +801,44 @@ function enviarAccion(accion) {
 }
 
 function aplicarOrdenLocal(serverHand) {
+  const newLen = serverHand.length;
+
   if (!state.localHandOrder || state.localHandOrder.length === 0) {
     state.localHandOrder = serverHand.map((_, i) => i);
-    return serverHand;
+    return [...serverHand];
   }
+
   const prevLen = state.localHandOrder.length;
-  const newLen = serverHand.length;
+
   if (newLen === prevLen) {
-    return state.localHandOrder.map(i => serverHand[i] || serverHand[0]);
-  } else if (newLen > prevLen) {
-    const diff = newLen - prevLen;
-    const newIndices = Array.from({length: diff}, (_, i) => prevLen + i);
-    state.localHandOrder = [...state.localHandOrder, ...newIndices];
-    return state.localHandOrder.map(i => serverHand[i] || serverHand[0]);
-  } else {
-    state.localHandOrder = Array.from({length: newLen}, (_, i) => i);
-    return serverHand;
+    // Mismo tamaño — aplicar orden visual guardado
+    return state.localHandOrder.map(i => serverHand[i]);
   }
+
+  if (newLen > prevLen) {
+    // Ganó cartas — agregar al final del orden visual
+    for (let i = prevLen; i < newLen; i++) {
+      state.localHandOrder.push(i);
+    }
+    return state.localHandOrder.map(i => serverHand[i]);
+  }
+
+  // Perdió cartas — filtrar índices que siguen siendo válidos
+  const validOrder = state.localHandOrder.filter(i => i < newLen);
+  if (validOrder.length === newLen) {
+    state.localHandOrder = validOrder;
+    return state.localHandOrder.map(i => serverHand[i]);
+  }
+
+  // Fallback limpio
+  state.localHandOrder = serverHand.map((_, i) => i);
+  return [...serverHand];
 }
 
 function procesarMensaje(data) {
   switch(data.type) {
     case 'game_state':
+      if (state._drawRetry) { clearTimeout(state._drawRetry); state._drawRetry = null; }
       if (data.my_hand) data.my_hand = aplicarOrdenLocal(data.my_hand);
       state.gameState = data;
       document.getElementById('pantalla-espera').style.display = 'none';
@@ -899,8 +915,24 @@ function iniciarTimer(segundos, fase) {
     state.timerSeconds--; actualizarTimerUI(state.timerSeconds, fase);
     if (state.timerSeconds <= 0) {
       detenerTimer();
-      if (fase === 'DRAW') enviarAccion({type: 'DRAW', source: 'deck'});
-      else { const gs = state.gameState; if (gs && gs.my_hand && gs.my_hand.length > 0) enviarAccion({type: 'DISCARD', card_index: 0}); }
+      if (fase === 'DRAW') {
+        enviarAccion({type: 'DRAW', source: 'deck'});
+        // Reintento si el servidor estaba ocupado con compras
+        state._drawRetry = setTimeout(() => {
+          const gs = state.gameState;
+          if (gs && gs.turn_phase === 'DRAW' && gs.current_player_index === state.myIndex) {
+            enviarAccion({type: 'DRAW', source: 'deck'});
+          }
+        }, 2500);
+      } else {
+        const gs = state.gameState;
+        if (gs && gs.my_hand && gs.my_hand.length > 0) {
+          // Usar índice real del servidor para descartar la primera carta visual
+          const serverIdx = (state.localHandOrder && state.localHandOrder[0] !== undefined)
+            ? state.localHandOrder[0] : 0;
+          enviarAccion({type: 'DISCARD', card_index: serverIdx});
+        }
+      }
     }
   }, 1000);
 }
@@ -1010,22 +1042,45 @@ function cancelarTodo() { state.pendingMelds=[];state.selectedIndices=[];renderM
 function descartar() {
   const gs=state.gameState; if(gs&&gs.turn_phase==='DRAW'){mostrarToast('Primero robá una carta');return;}
   if(state.selectedIndices.length===0){mostrarToast('Seleccioná una carta para descartar');return;}
-  detenerTimer(); enviarAccion({type:'DISCARD',card_index:state.selectedIndices[0]}); state.selectedIndices=[];
+  detenerTimer();
+  // selectedIndices usa índices visuales — convertir al índice real del servidor
+  const visualIdx = state.selectedIndices[0];
+  const serverIdx = (state.localHandOrder && state.localHandOrder[visualIdx] !== undefined)
+    ? state.localHandOrder[visualIdx] : visualIdx;
+  enviarAccion({type:'DISCARD', card_index: serverIdx});
+  state.selectedIndices=[];
 }
 function agregarAJuego(meldIdx) {
   if(state.selectedIndices.length===0){mostrarToast('Seleccioná una carta primero');return;}
-  const a={type:'ADD_TO_MELD',meld_index:meldIdx,card_indices:[...state.selectedIndices]};
+  // Convertir índices visuales a índices del servidor
+  const serverIndices = state.selectedIndices.map(vi =>
+    (state.localHandOrder && state.localHandOrder[vi] !== undefined)
+      ? state.localHandOrder[vi] : vi
+  );
+  const a={type:'ADD_TO_MELD', meld_index:meldIdx, card_indices: serverIndices};
   state.lastAction=a; enviarAccion(a); state.selectedIndices=[];
 }
 function bajarJuego() {
   const gs=state.gameState, myP=gs?gs.players.find(p=>p.index===state.myIndex):null; if(!myP) return;
+
+  // Convertir índices visuales a índices del servidor
+  function toServerIdx(visualIdx) {
+    return (state.localHandOrder && state.localHandOrder[visualIdx] !== undefined)
+      ? state.localHandOrder[visualIdx] : visualIdx;
+  }
+
   if(myP.has_met_objective) {
-    const indices=state.pendingMelds.length>0?state.pendingMelds[0]:[...state.selectedIndices];
-    if(indices.length===0){mostrarToast('Seleccioná cartas para bajar');return;}
-    state.pendingMelds=[];const a={type:'LAY_MELD',card_indices:indices};state.lastAction=a;enviarAccion(a);state.selectedIndices=[];
+    const visualIndices = state.pendingMelds.length>0 ? state.pendingMelds[0] : [...state.selectedIndices];
+    if(visualIndices.length===0){mostrarToast('Seleccioná cartas para bajar');return;}
+    state.pendingMelds=[];
+    const a={type:'LAY_MELD', card_indices: visualIndices.map(toServerIdx)};
+    state.lastAction=a; enviarAccion(a); state.selectedIndices=[];
   } else {
     if(state.pendingMelds.length===0){mostrarToast("Primero prepará tus grupos con 'Preparar'");return;}
-    const a={type:'LAY_ALL_OBJECTIVE',groups_indices:[...state.pendingMelds]};state.lastAction=a;enviarAccion(a);state.pendingMelds=[];state.selectedIndices=[];
+    const serverGroups = state.pendingMelds.map(group => group.map(toServerIdx));
+    const a={type:'LAY_ALL_OBJECTIVE', groups_indices: serverGroups};
+    state.lastAction=a; enviarAccion(a);
+    state.pendingMelds=[]; state.selectedIndices=[];
   }
 }
 async function siguienteRonda() {
