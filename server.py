@@ -242,6 +242,15 @@ async def handle_action(codigo: str, player_index: int, action: dict):
             await preguntar_siguiente_jugador(codigo)
         return
 
+    # ✅ Mensaje de chat — broadcast a todos
+    if action_type == "CHAT":
+        await broadcast_message(codigo, {
+            "type": "CHAT",
+            "player_name": game.players[player_index].name,
+            "text": action.get("text", "")[:200],  # máximo 200 chars
+        })
+        return
+
     # Verificamos turno para acciones normales
     acciones_de_turno = {"DRAW", "LAY_MELD", "LAY_ALL_OBJECTIVE", "ADD_TO_MELD", "DISCARD"}
     if action_type in acciones_de_turno and player_index != game.current_player_index:
