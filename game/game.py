@@ -508,10 +508,12 @@ class Game:
                 self.discard_pile = [top]
             if self.deck:
                 player.hand.append(self.deck.pop())
-                player.purchases_used += 1
-                msg = f"Compraste del pozo (+{extra} {'carta' if extra == 1 else 'cartas'})"
-                print(f"DEBUG: {player.name} compró — out_of_turn={out_of_turn} | +{extra} cartas")
-                return {"ok": True, "message": msg}
+        
+        # ✅ Fuera del loop
+        player.purchases_used += 1
+        msg = f"Compraste del pozo (+{extra} {'carta' if extra == 1 else 'cartas'})"
+        print(f"DEBUG: {player.name} compró — out_of_turn={out_of_turn} | +{extra} cartas")
+        return {"ok": True, "message": msg}
 
     def calculate_scores(self):
         resultados = []
