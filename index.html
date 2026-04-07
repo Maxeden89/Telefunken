@@ -395,6 +395,16 @@
       <button class="btn btn-azul" onclick="unirseSala()">Unirse</button>
     </div>
   </div>
+
+  <!-- Botón volver a partida activa -->
+  <div id="volver-partida" style="display:none;margin-top:24px;text-align:center;">
+    <div style="background:rgba(245,200,66,0.15);border:2px solid rgba(245,200,66,0.4);border-radius:14px;padding:16px 24px;max-width:340px;margin:0 auto;">
+      <div style="font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:10px;">🎮 Tenés una partida en curso</div>
+      <div style="font-size:18px;font-weight:800;color:#f5c842;letter-spacing:4px;margin-bottom:12px;" id="volver-codigo-display">-----</div>
+      <button class="btn btn-amarillo" onclick="volverAPartida()" style="width:100%;margin-bottom:8px;">▶ Volver a la partida</button>
+      <button class="btn btn-gris" onclick="descartarPartida()" style="width:100%;font-size:13px;">✕ Abandonar partida</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ ESPERA ══ -->
@@ -703,7 +713,7 @@
 </div>
 
 <!-- BOTÓN CHAT FLOTANTE -->
-<button class="btn-chat" onclick="toggleChat()" title="Chat del juego">
+<button class="btn-chat" onclick="toggleChat()" title="Chat del juego" style="position:relative;">
   💬
   <span class="chat-badge" id="chat-badge">0</span>
 </button>
@@ -730,6 +740,44 @@
 <script>
 const SERVER_URL = "https://telefunken-1.onrender.com";
 const WS_URL = "wss://telefunken-1.onrender.com";
+
+// ── RECUPERAR PARTIDA ──
+function verificarPartidaGuardada() {
+  const codigo = localStorage.getItem('tf_codigo');
+  const index = localStorage.getItem('tf_index');
+  const time = localStorage.getItem('tf_time');
+  // Válido hasta 3 horas después
+  if (codigo && index !== null && time && Date.now() - parseInt(time) < 3 * 60 * 60 * 1000) {
+    document.getElementById('volver-partida').style.display = 'block';
+    document.getElementById('volver-codigo-display').textContent = codigo;
+  }
+}
+
+function volverAPartida() {
+  const codigo = localStorage.getItem('tf_codigo');
+  const index = parseInt(localStorage.getItem('tf_index'));
+  if (!codigo || index === null) return;
+  state.codigo = codigo;
+  state.myIndex = index;
+  mostrarToast('Reconectando a la partida...');
+  document.getElementById('pantalla-inicio').style.display = 'none';
+  document.getElementById('pantalla-espera').style.display = 'flex';
+  document.getElementById('codigo-display').textContent = codigo;
+  document.getElementById('lista-jugadores-espera').innerHTML =
+    '<div class="jugador-item esperando">🔄 Reconectando...</div>';
+  conectarWS();
+}
+
+function descartarPartida() {
+  localStorage.removeItem('tf_codigo');
+  localStorage.removeItem('tf_index');
+  localStorage.removeItem('tf_time');
+  document.getElementById('volver-partida').style.display = 'none';
+  mostrarToast('Partida abandonada');
+}
+
+// Verificar al cargar
+verificarPartidaGuardada();
 
 const state = {
   codigo: null, myIndex: null, gameState: null,
@@ -899,6 +947,11 @@ async function unirseSala() {
 }
 
 function mostrarEspera(codigo, jugadores) {
+  // ✅ Guardar partida en localStorage para poder volver
+  localStorage.setItem('tf_codigo', codigo);
+  localStorage.setItem('tf_index', state.myIndex);
+  localStorage.setItem('tf_time', Date.now());
+
   document.getElementById('pantalla-inicio').style.display = 'none';
   document.getElementById('pantalla-espera').style.display = 'flex';
   document.getElementById('codigo-display').textContent = codigo;
@@ -979,6 +1032,8 @@ function procesarMensaje(data) {
     case 'new_round':
       state.selectedIndices = []; state.pendingMelds = [];
       state.pozoBlockeado = false; state.localHandOrder = null;
+      // Actualizar timestamp para mantener la sesión activa
+      localStorage.setItem('tf_time', Date.now());
       document.getElementById('modal-ronda').classList.remove('activo');
       mostrarToast(data.message || 'Nueva ronda');
       break;
