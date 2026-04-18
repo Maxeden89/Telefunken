@@ -372,6 +372,27 @@
     display: flex; align-items: center; justify-content: center;
   }
   .btn-enviar-chat:hover { background: #1d4ed8; }
+
+  /* ── MODAL FIN DE JUEGO ── */
+  #modal-game-over {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.92); z-index: 3000;
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  #modal-game-over.activo { display: flex; }
+  .game-over-panel {
+    background: linear-gradient(135deg, #0f3d1a, #1a5c2a);
+    border: 3px solid #f5c842;
+    border-radius: 24px; padding: 32px; max-width: 440px; width: 90%;
+    text-align: center;
+  }
+  .game-over-titulo { font-size: 32px; font-weight: 900; color: #f5c842; margin-bottom: 4px; }
+  .game-over-ganador { font-size: 22px; font-weight: 800; color: white; margin-bottom: 20px; }
+  .game-over-scores { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 12px; margin-bottom: 20px; }
+  .score-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: 8px; margin-bottom: 4px; }
+  .score-row.ganador { background: rgba(245,200,66,0.2); border: 1px solid rgba(245,200,66,0.4); }
+  .score-nombre { font-size: 15px; font-weight: 700; }
+  .score-puntos { font-size: 15px; font-weight: 800; color: #f5c842; }
 </style>
 </head>
 <body>
@@ -483,14 +504,18 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-compra">
-  <div class="modal">
-    <h3 id="modal-compra-titulo">🃏 ¿Querés esta carta?</h3>
-    <div class="timer-compra" id="timer-compra">10</div>
-    <div id="carta-pozo-preview" style="display:flex;justify-content:center;margin-bottom:16px;"></div>
-    <div class="modal-btns">
-      <button class="btn btn-verde" id="compra-si-btn">¡SÍ!</button>
-      <button class="btn btn-gris" id="compra-no-btn">NO</button>
+<div id="modal-compra" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:1500;width:auto;">
+  <div style="background:#1e4d2b;border:2px solid rgba(245,200,66,0.5);border-radius:16px;padding:16px 20px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.6);min-width:280px;">
+    <h3 id="modal-compra-titulo" style="font-size:16px;font-weight:800;margin-bottom:10px;color:#f5c842;">🃏 ¿Querés esta carta?</h3>
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;">
+      <div id="carta-pozo-preview" style="display:flex;justify-content:center;"></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+        <div class="timer-compra" id="timer-compra" style="width:42px;height:42px;font-size:18px;">10</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-verde" id="compra-si-btn" style="padding:8px 18px;font-size:14px;">¡SÍ!</button>
+          <button class="btn btn-gris" id="compra-no-btn" style="padding:8px 18px;font-size:14px;">NO</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -712,8 +737,18 @@
   </div>
 </div>
 
+<!-- ══ MODAL FIN DE JUEGO ══ -->
+<div id="modal-game-over">
+  <div class="game-over-panel">
+    <div class="game-over-titulo">🏆 FIN DEL JUEGO</div>
+    <div class="game-over-ganador" id="game-over-ganador"></div>
+    <div class="game-over-scores" id="game-over-scores"></div>
+    <button class="btn btn-amarillo" onclick="nuevaPartida()" style="margin-bottom:10px;">🎮 Nueva Partida</button>
+  </div>
+</div>
+
 <!-- BOTÓN CHAT FLOTANTE -->
-<button class="btn-chat" onclick="toggleChat()" title="Chat del juego">
+<button class="btn-chat" onclick="toggleChat()" title="Chat del juego" style="position:relative;">
   💬
   <span class="chat-badge" id="chat-badge">0</span>
 </button>
@@ -977,6 +1012,7 @@ function enviarAccion(accion) {
 function aplicarOrdenLocal(serverHand) {
   const newLen = serverHand.length;
 
+  // Sin orden previo — inicializar
   if (!state.localHandOrder || state.localHandOrder.length === 0) {
     state.localHandOrder = serverHand.map((_, i) => i);
     return [...serverHand];
@@ -990,14 +1026,21 @@ function aplicarOrdenLocal(serverHand) {
   }
 
   if (newLen > prevLen) {
-    // Ganó cartas — agregar al final del orden visual
-    for (let i = prevLen; i < newLen; i++) {
-      state.localHandOrder.push(i);
+    // Ganó cartas — las nuevas van AL FINAL visualmente
+    // El servidor agrega cartas al final, así que los índices nuevos son prevLen..newLen-1
+    // Pero el localHandOrder mapea índices visuales → índices servidor
+    // Solo agregamos los índices nuevos al final del orden visual
+    const diff = newLen - prevLen;
+    for (let i = 0; i < diff; i++) {
+      state.localHandOrder.push(prevLen + i);
     }
     return state.localHandOrder.map(i => serverHand[i]);
   }
 
-  // Perdió cartas — filtrar índices que siguen siendo válidos
+  // Perdió cartas — reconstruir orden filtrando los que quedaron
+  // Los índices en localHandOrder apuntan a posiciones del servidor
+  // Después de perder cartas, el servidor renumera de 0..newLen-1
+  // Necesitamos mantener el orden relativo de las cartas que quedaron
   const validOrder = state.localHandOrder.filter(i => i < newLen);
   if (validOrder.length === newLen) {
     state.localHandOrder = validOrder;
@@ -1047,6 +1090,12 @@ function procesarMensaje(data) {
       break;
     case 'ASK_OUT_OF_TURN': preguntarCompraFueraTurno(data); break;
     case 'CHAT': recibirChat(data); break;
+    case 'game_over': mostrarGameOver(data); break;
+    case 'clear_storage':
+      localStorage.removeItem('tf_codigo');
+      localStorage.removeItem('tf_index');
+      localStorage.removeItem('tf_time');
+      break;
   }
 }
 
@@ -1061,7 +1110,7 @@ function preguntarCompraFueraTurno(data) {
     preview.innerHTML = `<div class="carta" style="cursor:default;pointer-events:none;"><span class="rank ${cardColor(discardTop.suit)}">${discardTop.rank}</span>${suitSVG(discardTop.suit)}</div>`;
   } else { preview.innerHTML = ''; }
   document.getElementById('modal-compra-titulo').textContent = `🃏 ${data.player_name || 'Jugador'}, ¿querés esta carta?`;
-  document.getElementById('modal-compra').classList.add('activo');
+  document.getElementById('modal-compra').style.display = 'block';
   let segundos = 10;
   const timerEl = document.getElementById('timer-compra');
   timerEl.textContent = segundos; timerEl.style.background = '#e67e22';
@@ -1075,7 +1124,7 @@ function preguntarCompraFueraTurno(data) {
   document.getElementById('compra-no-btn').onclick = () => { clearInterval(state.compraTimer); cerrarModalCompra(); enviarAccion({type: 'OUT_OF_TURN_RESPONSE', buyer_index: buyerIndex, decision: 'no'}); };
 }
 
-function cerrarModalCompra() { document.getElementById('modal-compra').classList.remove('activo'); }
+function cerrarModalCompra() { document.getElementById('modal-compra').style.display = 'none'; }
 
 // ── RECUPERACIÓN DE TURNO BLOQUEADO ──
 function recuperarTurno() {
@@ -1309,6 +1358,36 @@ function mostrarModalJoker(data) {
   document.getElementById('modal-joker').classList.add('activo');
 }
 
+
+// ── FIN DE JUEGO ──
+function mostrarGameOver(data) {
+  detenerTimer();
+  localStorage.removeItem('tf_codigo');
+  localStorage.removeItem('tf_index');
+  localStorage.removeItem('tf_time');
+
+  document.getElementById('game-over-ganador').textContent = '🥇 Ganó ' + data.final_winner + '!';
+
+  const scoresEl = document.getElementById('game-over-scores');
+  scoresEl.innerHTML = (data.final_scores || []).map((s, i) =>
+    `<div class="score-row ${i === 0 ? 'ganador' : ''}">
+      <span class="score-nombre">${i === 0 ? '🏆 ' : (i === 1 ? '🥈 ' : '🥉 ')}${s.name}</span>
+      <span class="score-puntos">${s.score} pts</span>
+    </div>`
+  ).join('');
+
+  document.getElementById('modal-game-over').classList.add('activo');
+}
+
+function nuevaPartida() {
+  document.getElementById('modal-game-over').classList.remove('activo');
+  document.getElementById('pantalla-juego').style.display = 'none';
+  document.getElementById('pantalla-inicio').style.display = 'flex';
+  document.getElementById('volver-partida').style.display = 'none';
+  if (state.ws) { state.ws.onclose = null; state.ws.close(); state.ws = null; }
+  state.codigo = null; state.myIndex = null; state.gameState = null;
+  state.localHandOrder = null; state.selectedIndices = []; state.pendingMelds = [];
+}
 
 // ── CHAT ──
 let chatAbierto = false;

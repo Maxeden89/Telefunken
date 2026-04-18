@@ -265,11 +265,22 @@ async def handle_action(codigo: str, player_index: int, action: dict):
 
     if res["ok"]:
         if game.winner:
-            await broadcast_message(codigo, {
-                "type": "round_over",
-                "winner": game.winner.name,
-                "scores": [{"name": p.name, "score": p.score} for p in game.players],
-            })
+            # ✅ Fin de juego si es ronda 7
+            if game.round_number >= 7:
+                sorted_players = sorted(game.players, key=lambda p: p.score)
+                final_winner = sorted_players[0]
+                await broadcast_message(codigo, {
+                    "type": "game_over",
+                    "final_winner": final_winner.name,
+                    "final_scores": [{"name": p.name, "score": p.score} for p in sorted_players],
+                })
+                await broadcast_message(codigo, {"type": "clear_storage"})
+            else:
+                await broadcast_message(codigo, {
+                    "type": "round_over",
+                    "winner": game.winner.name,
+                    "scores": [{"name": p.name, "score": p.score} for p in game.players],
+                })
 
         await broadcast_state(codigo)
 

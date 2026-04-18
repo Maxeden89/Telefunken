@@ -572,8 +572,7 @@ class Game:
 
     def start_next_round(self):
         self.round_number += 1
-        if self.round_number > 7:
-            self.round_number = 1
+        
         
         self.deck = create_deck()
         self.melds = []
