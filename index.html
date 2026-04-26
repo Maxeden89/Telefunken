@@ -275,7 +275,7 @@
 
   /* ── CHAT FLOTANTE ── */
   .btn-chat {
-    position: fixed; bottom: 86px; right: 24px;
+    position: fixed; bottom: 24px; left: 24px;
     width: 54px; height: 54px;
     background: #2563eb; color: white;
     border: none; border-radius: 50%;
@@ -821,6 +821,8 @@ const state = {
   pozoBlockeado: false, ws: null, lastAction: null,
   dragSrcIndex: null, compraTimer: null,
   localHandOrder: null,
+  lastDiscardedServerIdx: null,   // índice servidor de la última carta descartada
+  lastRemovedServerIndices: null, // índices servidor de cartas bajadas/agregadas
 };
 
 // Ping anti-sleep cada 10 minutos
@@ -1026,29 +1028,53 @@ function aplicarOrdenLocal(serverHand) {
   }
 
   if (newLen > prevLen) {
-    // Ganó cartas — las nuevas van AL FINAL visualmente
-    // El servidor agrega cartas al final, así que los índices nuevos son prevLen..newLen-1
-    // Pero el localHandOrder mapea índices visuales → índices servidor
-    // Solo agregamos los índices nuevos al final del orden visual
-    const diff = newLen - prevLen;
-    for (let i = 0; i < diff; i++) {
-      state.localHandOrder.push(prevLen + i);
+    // Ganó cartas (robó del mazo o descarte) — agregarlas al final visualmente
+    // El servidor las agrega al final del array, así que sus índices son prevLen..newLen-1
+    for (let i = prevLen; i < newLen; i++) {
+      state.localHandOrder.push(i);
     }
     return state.localHandOrder.map(i => serverHand[i]);
   }
 
-  // Perdió cartas — reconstruir orden filtrando los que quedaron
-  // Los índices en localHandOrder apuntan a posiciones del servidor
-  // Después de perder cartas, el servidor renumera de 0..newLen-1
-  // Necesitamos mantener el orden relativo de las cartas que quedaron
-  const validOrder = state.localHandOrder.filter(i => i < newLen);
-  if (validOrder.length === newLen) {
-    state.localHandOrder = validOrder;
-    return state.localHandOrder.map(i => serverHand[i]);
+  // Perdió cartas — el servidor reindexó la mano
+  // Necesitamos saber qué índices del servidor se removieron para reconstruir el orden
+  const removedServerIndices = new Set();
+
+  if (state.lastDiscardedServerIdx !== null && state.lastDiscardedServerIdx !== undefined) {
+    removedServerIndices.add(state.lastDiscardedServerIdx);
+  }
+  if (state.lastRemovedServerIndices) {
+    state.lastRemovedServerIndices.forEach(i => removedServerIndices.add(i));
+  }
+
+  if (removedServerIndices.size > 0) {
+    // Construir nuevo orden: filtrar los removidos y reindexar
+    // El servidor reindexó: cada índice > removido se reduce en 1 por cada removido menor
+    const sortedRemoved = [...removedServerIndices].sort((a, b) => a - b);
+
+    const newOrder = [];
+    for (const oldServerIdx of state.localHandOrder) {
+      if (removedServerIndices.has(oldServerIdx)) continue; // esta carta se fue
+      // Calcular nuevo índice del servidor después de la remoción
+      let newServerIdx = oldServerIdx;
+      for (const removed of sortedRemoved) {
+        if (removed < oldServerIdx) newServerIdx--;
+      }
+      newOrder.push(newServerIdx);
+    }
+
+    if (newOrder.length === newLen) {
+      state.localHandOrder = newOrder;
+      state.lastDiscardedServerIdx = null;
+      state.lastRemovedServerIndices = null;
+      return state.localHandOrder.map(i => serverHand[i]);
+    }
   }
 
   // Fallback limpio
   state.localHandOrder = serverHand.map((_, i) => i);
+  state.lastDiscardedServerIdx = null;
+  state.lastRemovedServerIndices = null;
   return [...serverHand];
 }
 
@@ -1286,27 +1312,30 @@ function descartar() {
   const gs=state.gameState; if(gs&&gs.turn_phase==='DRAW'){mostrarToast('Primero robá una carta');return;}
   if(state.selectedIndices.length===0){mostrarToast('Seleccioná una carta para descartar');return;}
   detenerTimer();
-  // selectedIndices usa índices visuales — convertir al índice real del servidor
   const visualIdx = state.selectedIndices[0];
   const serverIdx = (state.localHandOrder && state.localHandOrder[visualIdx] !== undefined)
     ? state.localHandOrder[visualIdx] : visualIdx;
+  // ✅ Guardar qué índice del servidor se descartó para reconstruir el orden
+  state.lastDiscardedServerIdx = serverIdx;
+  state.lastRemovedServerIndices = null;
   enviarAccion({type:'DISCARD', card_index: serverIdx});
   state.selectedIndices=[];
 }
 function agregarAJuego(meldIdx) {
   if(state.selectedIndices.length===0){mostrarToast('Seleccioná una carta primero');return;}
-  // Convertir índices visuales a índices del servidor
   const serverIndices = state.selectedIndices.map(vi =>
     (state.localHandOrder && state.localHandOrder[vi] !== undefined)
       ? state.localHandOrder[vi] : vi
   );
+  // ✅ Guardar índices removidos
+  state.lastRemovedServerIndices = serverIndices;
+  state.lastDiscardedServerIdx = null;
   const a={type:'ADD_TO_MELD', meld_index:meldIdx, card_indices: serverIndices};
   state.lastAction=a; enviarAccion(a); state.selectedIndices=[];
 }
 function bajarJuego() {
   const gs=state.gameState, myP=gs?gs.players.find(p=>p.index===state.myIndex):null; if(!myP) return;
 
-  // Convertir índices visuales a índices del servidor
   function toServerIdx(visualIdx) {
     return (state.localHandOrder && state.localHandOrder[visualIdx] !== undefined)
       ? state.localHandOrder[visualIdx] : visualIdx;
@@ -1316,11 +1345,19 @@ function bajarJuego() {
     const visualIndices = state.pendingMelds.length>0 ? state.pendingMelds[0] : [...state.selectedIndices];
     if(visualIndices.length===0){mostrarToast('Seleccioná cartas para bajar');return;}
     state.pendingMelds=[];
-    const a={type:'LAY_MELD', card_indices: visualIndices.map(toServerIdx)};
+    const serverIdxs = visualIndices.map(toServerIdx);
+    // ✅ Guardar qué índices del servidor se bajaron
+    state.lastRemovedServerIndices = serverIdxs;
+    state.lastDiscardedServerIdx = null;
+    const a={type:'LAY_MELD', card_indices: serverIdxs};
     state.lastAction=a; enviarAccion(a); state.selectedIndices=[];
   } else {
     if(state.pendingMelds.length===0){mostrarToast("Primero prepará tus grupos con 'Preparar'");return;}
     const serverGroups = state.pendingMelds.map(group => group.map(toServerIdx));
+    const allServerIdxs = serverGroups.flat();
+    // ✅ Guardar todos los índices bajados
+    state.lastRemovedServerIndices = allServerIdxs;
+    state.lastDiscardedServerIdx = null;
     const a={type:'LAY_ALL_OBJECTIVE', groups_indices: serverGroups};
     state.lastAction=a; enviarAccion(a);
     state.pendingMelds=[]; state.selectedIndices=[];
