@@ -1385,10 +1385,13 @@ function mostrarModalJoker(data) {
     c.innerHTML=`<span class="rank ${cardColor(sn)}">${rank}</span>${suitSVG(sn)}`;
     c.onclick=()=>{
       document.getElementById('modal-joker').classList.remove('activo');
-      const a={...state.lastAction};
-      if(data.group_index!==undefined&&data.group_index!==null) a[`declared_joker_rank_${data.group_index}`]=rank;
-      else a.declared_joker_rank=rank;
-      enviarAccion(a);
+      // ✅ Acumular ranks declarados en lastAction en vez de sobreescribir
+      if(data.group_index!==undefined&&data.group_index!==null) {
+        state.lastAction[`declared_joker_rank_${data.group_index}`]=rank;
+      } else {
+        state.lastAction.declared_joker_rank=rank;
+      }
+      enviarAccion({...state.lastAction});
     };
     cont.appendChild(c);
   });
